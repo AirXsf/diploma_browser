@@ -55,7 +55,6 @@ module.exports.register = (req, res) => {
 
 //检查登录
 module.exports.check = (req, res) => {
-  //先查用户名存不存在
   let username = req.body.username;
   let password = req.body.password;
   let obj = {};
@@ -71,6 +70,7 @@ module.exports.check = (req, res) => {
   }
 
   //sql data传入
+  //先查用户名存不存在
   let sql = 'select count(*) as total from user where username=?';
   let data = [username];
   getJson(sql, data)
@@ -96,7 +96,12 @@ module.exports.check = (req, res) => {
         //密码错误
         obj = { flag: '2' };
       }
+      console.log('后面的不执行了');
       res.json(obj);
+    })
+    //因为promise异步操作中,return无效,所以一旦前面捕获到异常,直接抓住,后面不执行了。
+    .catch((err) => {
+      console.log(err.message);
     });
 
   /*
