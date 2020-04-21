@@ -22,20 +22,27 @@
         </el-submenu>
       </el-submenu>
 
-      <el-menu-item index="2" @click="jump">首页</el-menu-item>
+      <el-menu-item index="2" @click="jump">
+        <i class="el-icon-headset"></i>首页
+      </el-menu-item>
 
-      <el-menu-item index="3" @click="dialog = true">我的</el-menu-item>
+      <el-menu-item index="3" @click="dialog = true">
+        <i class="el-icon-s-custom"></i>我的
+      </el-menu-item>
 
-      <el-menu-item index="4" @click="table = true">购物车</el-menu-item>
-      <el-menu-item index="5" @click="open">登录/注册</el-menu-item>
+      <el-menu-item index="4" @click="table = true">
+        <i class="el-icon-shopping-cart-full"></i>购物车
+      </el-menu-item>
+      <el-menu-item index="5" @click="open">
+        <i class="el-icon-sort"></i>
+        登录/注册
+      </el-menu-item>
     </el-menu>
     <!--Element跑马灯的组件-->
     <el-carousel :interval="4000" type="card" :height="bannerH + 'px'">
       <el-carousel-item v-for="item in bannerList" :key="item.img">
         <h3 class="medium">
-          <el-link :href="item.img_href">
-            <el-image :src="item.img" fit="fill"></el-image>
-          </el-link>
+          <img :src="item.img" @click="open" />
         </h3>
       </el-carousel-item>
     </el-carousel>
@@ -43,20 +50,12 @@
     <!--自定义搜索框组件 -->
     <el-row>
       <el-col :span="4" :offset="8" class="father">
-        <el-input
-          v-model="goodsName"
-          placeholder="请输入商品名"
-          class="Bcolor"
-        ></el-input>
+        <el-input v-model="goodsName" placeholder="请输入商品名" class="Bcolor"></el-input>
         <i class="el-icon-search son"></i>
       </el-col>
       <!--价格选项款-->
       <el-col :span="3">
-        <el-select
-          v-model="goodsPrice"
-          placeholder="请选择价格(可选)"
-          class="special"
-        >
+        <el-select v-model="goodsPrice" placeholder="请选择价格(可选)" class="special">
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -73,43 +72,49 @@
       <el-col :span="3" :offset="2">
         <div class="block">
           <span class="demonstration">几成新(可选)---{{ quality }}</span>
-          <el-slider
-            class="slider"
-            v-model="quality"
-            :step="1"
-            :max="10"
-            show-stops
-          ></el-slider>
+          <el-slider class="slider" v-model="quality" :step="1" :max="10" show-stops></el-slider>
         </div>
       </el-col>
     </el-row>
 
-    <!--卡片-->
+    <!--标签页-->
     <el-row>
-      <el-tabs type="border-card">
-        <el-tab-pane>
-          <!--标签页-->
-          <span slot="label"> <i class="el-icon-monitor"></i> 智能产品区 </span>
+      <el-tabs type="border-card" v-model="activeName" @tab-click="handleClick">
+        <el-tab-pane name="first">
+          <!--标签页头-->
+          <span slot="label">
+            <i class="el-icon-monitor"></i> 智能产品区
+          </span>
 
           <!--内容-->
           <el-row>
             <transition-group>
-              <el-col :span="6" v-for="item in displayData" :key="item.id">
-                <div>
-                  <el-image fit="fill" :src="item.img"></el-image>
-                  <div class="information">
+              <el-col :span="4" v-for="item in displayData" :key="item.id">
+                <img :src="item.img" @click="open" />
+                <div class="information">
+                  <el-row>
                     <el-col :span="24">
-                      <span>{{ item.name }}</span>
+                      <a @click.prevent="open">
+                        <span>{{ item.name }}</span>
+                      </a>
                       <el-divider direction="vertical"></el-divider>
-                      <span>{{ item.price }}</span>
+                      <a @click.prevent="open">
+                        <span>{{ item.price }}</span>
+                      </a>
                     </el-col>
+                  </el-row>
+                  <el-row>
                     <el-col :span="24">
                       <el-divider></el-divider>
                     </el-col>
+                  </el-row>
+                  <el-row>
                     <el-col :span="24">
-                      <span>{{ item.description }}</span>
+                      <a @click.prevent="open">
+                        <span>{{ item.description }}</span>
+                      </a>
                     </el-col>
-                  </div>
+                  </el-row>
                 </div>
               </el-col>
             </transition-group>
@@ -121,7 +126,7 @@
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
                 :current-page.sync="currentPage"
-                :page-sizes="[8, 4]"
+                :page-sizes="[12,6]"
                 layout="total, sizes, prev, pager, next, jumper"
                 :total="24"
                 background
@@ -130,52 +135,42 @@
           </el-row>
         </el-tab-pane>
 
-        <el-tab-pane>
-          <span slot="label"> <i class="el-icon-goods"></i> 潮流服鞋区 </span>
+        <el-tab-pane name="second">
+          <span slot="label">
+            <i class="el-icon-goods"></i> 潮流服鞋区
+          </span>
 
           <el-row>
-            <el-col :span="6">
-              <div class="grid-content bg-purple"></div>
-            </el-col>
-            <el-col :span="6">
-              <div class="grid-content bg-purple-light"></div>
-            </el-col>
-            <el-col :span="6">
-              <div class="grid-content bg-purple"></div>
-            </el-col>
-            <el-col :span="6">
-              <div class="grid-content bg-purple-light"></div>
-            </el-col>
-          </el-row>
-
-          <el-row>
-            <el-col :span="6">
-              <div class="grid-content bg-purple"></div>
-            </el-col>
-            <el-col :span="6">
-              <div class="grid-content bg-purple-light"></div>
-            </el-col>
-            <el-col :span="6">
-              <div class="grid-content bg-purple"></div>
-            </el-col>
-            <el-col :span="6">
-              <div class="grid-content bg-purple-light"></div>
-            </el-col>
-          </el-row>
-
-          <el-row>
-            <el-col :span="6">
-              <div class="grid-content bg-purple"></div>
-            </el-col>
-            <el-col :span="6">
-              <div class="grid-content bg-purple-light"></div>
-            </el-col>
-            <el-col :span="6">
-              <div class="grid-content bg-purple"></div>
-            </el-col>
-            <el-col :span="6">
-              <div class="grid-content bg-purple-light"></div>
-            </el-col>
+            <transition-group>
+              <el-col :span="4" v-for="item in displayData" :key="item.id">
+                <img :src="item.img" @click="open" />
+                <div class="information">
+                  <el-row>
+                    <el-col :span="24">
+                      <a @click.prevent="open">
+                        <span>{{ item.name }}</span>
+                      </a>
+                      <el-divider direction="vertical"></el-divider>
+                      <a @click.prevent="open">
+                        <span>{{ item.price }}</span>
+                      </a>
+                    </el-col>
+                  </el-row>
+                  <el-row>
+                    <el-col :span="24">
+                      <el-divider></el-divider>
+                    </el-col>
+                  </el-row>
+                  <el-row>
+                    <el-col :span="24">
+                      <a @click.prevent="open">
+                        <span>{{ item.description }}</span>
+                      </a>
+                    </el-col>
+                  </el-row>
+                </div>
+              </el-col>
+            </transition-group>
           </el-row>
 
           <el-row>
@@ -184,58 +179,51 @@
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
                 :current-page.sync="currentPage"
-                layout="prev, pager, next, jumper"
-                :total="30"
+                :page-sizes="[12, 6]"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="24"
+                background
               ></el-pagination>
             </div>
           </el-row>
         </el-tab-pane>
-        <el-tab-pane>
-          <span slot="label"> <i class="el-icon-reading"></i> 图书影音区 </span>
+
+        <el-tab-pane name="third">
+          <span slot="label">
+            <i class="el-icon-reading"></i> 图书影音区
+          </span>
 
           <el-row>
-            <el-col :span="6">
-              <div class="grid-content bg-purple"></div>
-            </el-col>
-            <el-col :span="6">
-              <div class="grid-content bg-purple-light"></div>
-            </el-col>
-            <el-col :span="6">
-              <div class="grid-content bg-purple"></div>
-            </el-col>
-            <el-col :span="6">
-              <div class="grid-content bg-purple-light"></div>
-            </el-col>
-          </el-row>
-
-          <el-row>
-            <el-col :span="6">
-              <div class="grid-content bg-purple"></div>
-            </el-col>
-            <el-col :span="6">
-              <div class="grid-content bg-purple-light"></div>
-            </el-col>
-            <el-col :span="6">
-              <div class="grid-content bg-purple"></div>
-            </el-col>
-            <el-col :span="6">
-              <div class="grid-content bg-purple-light"></div>
-            </el-col>
-          </el-row>
-
-          <el-row>
-            <el-col :span="6">
-              <div class="grid-content bg-purple"></div>
-            </el-col>
-            <el-col :span="6">
-              <div class="grid-content bg-purple-light"></div>
-            </el-col>
-            <el-col :span="6">
-              <div class="grid-content bg-purple"></div>
-            </el-col>
-            <el-col :span="6">
-              <div class="grid-content bg-purple-light"></div>
-            </el-col>
+            <transition-group>
+              <el-col :span="4" v-for="item in displayData" :key="item.id">
+                <img :src="item.img" @click="open" />
+                <div class="information">
+                  <el-row>
+                    <el-col :span="24">
+                      <a @click.prevent="open">
+                        <span>{{ item.name }}</span>
+                      </a>
+                      <el-divider direction="vertical"></el-divider>
+                      <a @click.prevent="open">
+                        <span>{{ item.price }}</span>
+                      </a>
+                    </el-col>
+                  </el-row>
+                  <el-row>
+                    <el-col :span="24">
+                      <el-divider></el-divider>
+                    </el-col>
+                  </el-row>
+                  <el-row>
+                    <el-col :span="24">
+                      <a @click.prevent="open">
+                        <span>{{ item.description }}</span>
+                      </a>
+                    </el-col>
+                  </el-row>
+                </div>
+              </el-col>
+            </transition-group>
           </el-row>
 
           <el-row>
@@ -244,58 +232,51 @@
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
                 :current-page.sync="currentPage"
-                layout="prev, pager, next, jumper"
-                :total="30"
+                :page-sizes="[12, 6]"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="24"
+                background
               ></el-pagination>
             </div>
           </el-row>
         </el-tab-pane>
-        <el-tab-pane>
-          <span slot="label"> <i class="el-icon-box"></i> 生活物品区 </span>
+
+        <el-tab-pane name="fourth">
+          <span slot="label">
+            <i class="el-icon-box"></i> 综合乐器区
+          </span>
 
           <el-row>
-            <el-col :span="6">
-              <div class="grid-content bg-purple"></div>
-            </el-col>
-            <el-col :span="6">
-              <div class="grid-content bg-purple-light"></div>
-            </el-col>
-            <el-col :span="6">
-              <div class="grid-content bg-purple"></div>
-            </el-col>
-            <el-col :span="6">
-              <div class="grid-content bg-purple-light"></div>
-            </el-col>
-          </el-row>
-
-          <el-row>
-            <el-col :span="6">
-              <div class="grid-content bg-purple"></div>
-            </el-col>
-            <el-col :span="6">
-              <div class="grid-content bg-purple-light"></div>
-            </el-col>
-            <el-col :span="6">
-              <div class="grid-content bg-purple"></div>
-            </el-col>
-            <el-col :span="6">
-              <div class="grid-content bg-purple-light"></div>
-            </el-col>
-          </el-row>
-
-          <el-row>
-            <el-col :span="6">
-              <div class="grid-content bg-purple"></div>
-            </el-col>
-            <el-col :span="6">
-              <div class="grid-content bg-purple-light"></div>
-            </el-col>
-            <el-col :span="6">
-              <div class="grid-content bg-purple"></div>
-            </el-col>
-            <el-col :span="6">
-              <div class="grid-content bg-purple-light"></div>
-            </el-col>
+            <transition-group>
+              <el-col :span="4" v-for="item in displayData" :key="item.id">
+                <img :src="item.img" @click="open" />
+                <div class="information">
+                  <el-row>
+                    <el-col :span="24">
+                      <a @click.prevent="open">
+                        <span>{{ item.name }}</span>
+                      </a>
+                      <el-divider direction="vertical"></el-divider>
+                      <a @click.prevent="open">
+                        <span>{{ item.price }}</span>
+                      </a>
+                    </el-col>
+                  </el-row>
+                  <el-row>
+                    <el-col :span="24">
+                      <el-divider></el-divider>
+                    </el-col>
+                  </el-row>
+                  <el-row>
+                    <el-col :span="24">
+                      <a @click.prevent="open">
+                        <span>{{ item.description }}</span>
+                      </a>
+                    </el-col>
+                  </el-row>
+                </div>
+              </el-col>
+            </transition-group>
           </el-row>
 
           <el-row>
@@ -304,8 +285,10 @@
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
                 :current-page.sync="currentPage"
-                layout="prev, pager, next, jumper"
-                :total="30"
+                :page-sizes="[6]"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="12"
+                background
               ></el-pagination>
             </div>
           </el-row>
@@ -340,33 +323,47 @@
             type="primary"
             @click="$refs.drawer.closeDrawer()"
             :loading="loading"
-            >{{ loading ? '提交中 ...' : '确 定' }}</el-button
-          >
+          >{{ loading ? '提交中 ...' : '确 定' }}</el-button>
         </div>
       </div>
     </el-drawer>
 
     <!--抽屉右模块 -->
-    <el-drawer
-      title="我嵌套了表格!"
-      :visible.sync="table"
-      direction="rtl"
-      size="50%"
-    >
+    <el-drawer title="我嵌套了表格!" :visible.sync="table" direction="rtl" size="50%">
       <el-table :data="gridData">
-        <el-table-column
-          property="date"
-          label="日期"
-          width="150"
-        ></el-table-column>
-        <el-table-column
-          property="name"
-          label="姓名"
-          width="200"
-        ></el-table-column>
+        <el-table-column property="date" label="日期" width="150"></el-table-column>
+        <el-table-column property="name" label="姓名" width="200"></el-table-column>
         <el-table-column property="address" label="地址"></el-table-column>
       </el-table>
     </el-drawer>
+
+    <!--背景层-->
+    <div id="popLayer" v-show="flag"></div>
+    <transition name="slide">
+      <!--弹出层-->
+      <div class="el-message-box" id="popbox" v-show="flag">
+        <div class="el-message-box__header">
+          <div class="el-message-box__title">
+            <span>
+              <i class="el-icon-headset"></i>优闲
+            </span>
+          </div>
+          <button type="button" class="el-message-box__headerbtn" @click="close">
+            <i class="el-message-box__close el-icon-close"></i>
+          </button>
+        </div>
+        <div class="el-message-box__content">
+          <div class="el-message-box__message">
+            <p>
+              <router-link to="/register">注册</router-link>
+              <router-link to="/login">登录</router-link>
+
+              <router-view></router-view>
+            </p>
+          </div>
+        </div>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -374,52 +371,60 @@
 export default {
   data() {
     return {
+      //弹框
+      flag: false,
       //banner数据
       bannerH: 200,
       bannerList: [],
 
       //主页图片数据
-      homeList: [],
+      aiList: [],
+      shoeList: [],
+      bookList: [],
+      musicList: [],
 
       //默认激活页头组件的第一个模块
-      activeIndex: '2',
+      activeIndex: "2",
 
       //价格的选项值
       options: [
         {
-          value: '选项1',
-          label: '<500'
+          value: "选项1",
+          label: "<500"
         },
         {
-          value: '选项2',
-          label: '500~1000'
+          value: "选项2",
+          label: "500~1000"
         },
         {
-          value: '选项3',
-          label: '1000~2000'
+          value: "选项3",
+          label: "1000~2000"
         },
         {
-          value: '选项4',
-          label: '2000~3000'
+          value: "选项4",
+          label: "2000~3000"
         },
         {
-          value: '选项5',
-          label: '>3000'
+          value: "选项5",
+          label: ">3000"
         }
       ],
       //商品名
-      goodsName: '',
+      goodsName: "",
       //商品价格
-      goodsPrice: '',
+      goodsPrice: "",
       //几成新的值
       quality: 0,
 
       //控制分页的现在页数
       currentPage: 1,
-      //控制分页的每页多少条;
-      pageSize: 8,
+      //控制分页一开始多少条一页;
+      pageSize: 12,
       //分页要展示的数组
       displayData: [],
+
+      //激活的卡片
+      activeName: "first",
 
       //抽屉数据
       table: false,
@@ -428,38 +433,38 @@ export default {
       //抽屉表格值
       gridData: [
         {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
+          date: "2016-05-02",
+          name: "王小虎",
+          address: "上海市普陀区金沙江路 1518 弄"
         },
         {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
+          date: "2016-05-04",
+          name: "王小虎",
+          address: "上海市普陀区金沙江路 1518 弄"
         },
         {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
+          date: "2016-05-01",
+          name: "王小虎",
+          address: "上海市普陀区金沙江路 1518 弄"
         },
         {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
+          date: "2016-05-03",
+          name: "王小虎",
+          address: "上海市普陀区金沙江路 1518 弄"
         }
       ],
       //抽屉表单中数据
       form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
+        name: "",
+        region: "",
+        date1: "",
+        date2: "",
         delivery: false,
         type: [],
-        resource: '',
-        desc: ''
+        resource: "",
+        desc: ""
       },
-      formLabelWidth: '80px',
+      formLabelWidth: "80px",
       timer: null
     };
   },
@@ -469,14 +474,14 @@ export default {
     //拿取后台主页数据
     this.renderHome();
     setTimeout(() => {
-      this.homeSize();
-    }, 500);
+      this.homeSize(this.aiList);
+    }, 800);
   },
   mounted() {
     //图片自适应高度
     this.setBannerH();
     window.addEventListener(
-      'resize',
+      "resize",
       () => {
         this.setBannerH();
       },
@@ -491,97 +496,154 @@ export default {
 
     // 拿数据渲染轮播图
     renderBanner() {
-      this.$http.jsonp('http://localhost:4000/getBanner').then(
+      this.$http.jsonp("http://localhost:4000/getBanner").then(
         response => {
           console.log(response.body);
           this.bannerList = response.body;
         },
         response => {
-          console.log('请求失败');
+          console.log("请求失败");
         }
       );
     },
 
     //拿数据渲染主页图
     renderHome() {
-      let obj = {
-        category: '电子产品'
-      };
-      this.$http
-        .jsonp('http://localhost:4000/getHome', { params: obj })
-        .then(response => {
+      this.$http.jsonp("http://localhost:4000/getHome").then(
+        response => {
           console.log(response.body);
-          this.homeList = response.body;
-          console.log('哈哈');
-        });
+          response.body.forEach((item, index) => {
+            if (item.category == "电子产品") {
+              this.aiList.push(item);
+            }
+            if (item.category == "潮流服鞋") {
+              this.shoeList.push(item);
+            }
+            if (item.category == "图书影音") {
+              this.bookList.push(item);
+            }
+            if (item.category == "综合乐器") {
+              this.musicList.push(item);
+            }
+          });
+        },
+        response => {
+          console.log("请求失败");
+        }
+      );
     },
 
     //计算当前页面的数据
-    homeSize() {
-      console.log('嘿嘿');
+    homeSize(whichList) {
+      this.displayData = [];
       for (
         var j = this.pageSize * (this.currentPage - 1);
         j < this.pageSize * this.currentPage;
         j++
       ) {
         // this.homeList是总数据
-        if (this.homeList[j]) {
+        if (whichList[j]) {
           //把数据Push进要渲染的数组
-          this.displayData.push(this.homeList[j]);
+          this.displayData.push(whichList[j]);
         }
       }
     },
 
-    //改变现在的页数时触发
+    //改变现在的页数时触发(判断是哪个标签页)
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
-      //改变现在的页数时要清空原先的旧数组
-      this.displayData = [];
-      this.homeSize();
+      if (this.activeName == "first") {
+        this.homeSize(this.aiList);
+      }
+      if (this.activeName == "second") {
+        this.homeSize(this.shoeList);
+      }
+      if (this.activeName == "third") {
+        this.homeSize(this.bookList);
+      }
+      if (this.activeName == "fourth") {
+        this.homeSize(this.musicList);
+      }
     },
 
-    //页面条数调整触发
+    //改变页面条数时触发(判断是哪个标签页)
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
       this.pageSize = `${val}`;
-      //改变现在的页数时要清空原先的旧数组
-      this.displayData = [];
-      this.homeSize();
+      this.currentPage = 1;
+      if (this.activeName == "first") {
+        this.homeSize(this.aiList);
+      }
+      if (this.activeName == "second") {
+        this.homeSize(this.shoeList);
+      }
+      if (this.activeName == "third") {
+        this.homeSize(this.bookList);
+      }
+      if (this.activeName == "fourth") {
+        this.homeSize(this.musicList);
+      }
+    },
+
+    //标签页单击的触发函数
+    handleClick(tab, event) {
+      if (this.activeName == "first") {
+        //换标签时换回原位
+        this.currentPage = 1;
+        this.pageSize = 12;
+        this.homeSize(this.aiList);
+      }
+      if (this.activeName == "second") {
+        /* let obj = {
+          category: "潮流服鞋"
+        };
+        this.$http
+          .jsonp("http://localhost:4000/getHome", { params: obj })
+          .then(response => {
+            console.log(response.body);
+            this.homeList = response.body;
+          });
+        setTimeout(() => {
+          this.homeSize();
+        }, 600);
+        */
+        this.currentPage = 1;
+        this.pageSize = 12;
+        this.homeSize(this.shoeList);
+      }
+      if (this.activeName == "third") {
+        this.currentPage = 1;
+        this.pageSize = 12;
+        this.homeSize(this.bookList);
+      }
+      if (this.activeName == "fourth") {
+        this.currentPage = 1;
+        this.pageSize = 6;
+        this.homeSize(this.musicList);
+      }
     },
 
     //跳转页面
     jump() {
-      window.location.href = '/';
+      window.location.href = "/";
     },
 
     //注册登录
     open() {
-      this.$prompt('请输入用户名', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
-        inputErrorMessage: '邮箱格式不正确'
-      })
-        .then(({ value }) => {
-          this.$message({
-            type: 'success',
-            message: '你的邮箱是: ' + value
-          });
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '取消输入'
-          });
-        });
+      //取消滚动条
+      this.flag = true;
+      document.querySelector("#x").style = "overflow:hidden";
+      window.location.href = "/#/login";
     },
-
+    close() {
+      this.flag = false;
+      window.location.href = "/#/";
+      document.querySelector("#x").style = "overflow:visible";
+    },
     //抽屉方法
     handleClose(done) {
       if (this.loading) {
         return;
       }
-      this.$confirm('确定要提交表单吗？')
+      this.$confirm("确定要提交表单吗？")
         .then(_ => {
           this.loading = true;
           this.timer = setTimeout(() => {
@@ -604,11 +666,25 @@ export default {
 </script>
 
 <style lang="less">
-/*设置a标签(全局)*/
+/*设置(全局)*/
 a {
   text-decoration: none;
+  cursor: pointer;
+}
+img {
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
 }
 
+/*标签页*/
+.el-menu-item {
+  a {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+  }
+}
 /*elementUI跑马灯样式*/
 .el-carousel__item {
   h3 {
@@ -647,27 +723,24 @@ a {
 }
 
 /*主页下方图片区域块*/
-.el-row {
-  margin-top: 20px;
-  &:last-child {
-    margin-bottom: 0;
-  }
-  .el-col-6 {
-    border-left: 2px dashed rgb(84, 92, 100);
-    border-top: 2px dashed rgb(84, 92, 100);
-    border-bottom: 2px dashed rgb(84, 92, 100);
-    text-align: center;
-    margin-bottom: 10px;
-    &:last-child {
-      border-right: 2px dashed rgb(84, 92, 100);
-    }
-    .information {
-      .el-divider--horizontal {
-        margin: 12px 0;
-      }
-      .el-divider--vertical {
-        width: 1px;
-        background-color: black;
+.el-tab-pane {
+  .el-row {
+    margin-top: 20px;
+    .el-col-4 {
+      border: 1px dashed rgb(84, 92, 100);
+      margin-bottom: 15px;
+      .information {
+        text-align: center;
+        .el-divider--horizontal {
+          margin: 10px 0;
+        }
+        .el-row {
+          margin-top: 7px;
+        }
+        .el-divider--vertical {
+          width: 1px;
+          background-color: black;
+        }
       }
     }
   }
@@ -704,14 +777,120 @@ a {
   position: absolute;
 }
 
-.bg-purple {
-  background: #d3dce6;
+/*设置弹出框的样式*/
+.el-message-box {
+  .el-message-box__headerbtn {
+    font-size: 22px;
+  }
+  .el-message-box__title {
+    font-size: 25px;
+    color: #009588;
+  }
+  .el-message-box__content {
+    .el-message-box__message {
+      > p {
+        text-align: center;
+        > div {
+          text-align: left;
+          margin-top: 5px;
+        }
+        a {
+          color: #b8bcc9;
+          font-size: 30px;
+          &.router-link-active {
+            color: #2f3333;
+            border-bottom: 1px dashed #009588;
+          }
+          &:hover {
+            cursor: pointer;
+          }
+          &:nth-child(1) {
+            margin-right: 80px;
+          }
+        }
+      }
+    }
+  }
 }
-.bg-purple-light {
-  background: #e5e9f2;
+/*设置背景层的样式*/
+#popLayer {
+  background-color: #000;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 10;
+  -moz-opacity: 0.5;
+  opacity: 0.5;
+  filter: alpha(opacity=50);
+  /*只支持IE6、7、8、9*/
+  -webkit-filter: alpha(opacity=50);
 }
-.grid-content {
-  border-radius: 4px;
-  min-height: 36px;
+/*设置弹出层*/
+#popbox {
+  background-color: #ffffff;
+  height: 355px;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  z-index: 11;
+  -webkit-transition: all 0.2s ease-in; /*加动画*/
+  transition: all 0.2s ease-in;
+  -moz-transition: all 0.2s ease-in;
+  -ms-transition: all 0.2s ease-in;
+  -o-transition: all 0.2s ease-in;
+}
+
+/*弹出层动画*/
+
+.slide-enter-active {
+  animation-name: slideInUp;
+  animation-duration: 0.2s;
+  animation-fill-mode: both;
+}
+.slide-leave-active {
+  animation-name: slideOutDown;
+  animation-duration: 0.2s;
+  animation-fill-mode: both;
+}
+@keyframes slideInUp {
+  0% {
+    transform: translate3d(0, 100%, 0);
+    visibility: visible;
+    -webkit-transform: translate3d(0, 100%, 0);
+    -moz-transform: translate3d(0, 100%, 0);
+    -ms-transform: translate3d(0, 100%, 0);
+    -o-transform: translate3d(0, 100%, 0);
+  }
+
+  to {
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    -moz-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    -o-transform: translateZ(0);
+  }
+}
+@keyframes slideOutDown {
+  0% {
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    -moz-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    -o-transform: translateZ(0);
+  }
+
+  to {
+    visibility: hidden;
+    transform: translate3d(0, 100%, 0);
+    -webkit-transform: translate3d(0, 100%, 0);
+    -moz-transform: translate3d(0, 100%, 0);
+    -ms-transform: translate3d(0, 100%, 0);
+    -o-transform: translate3d(0, 100%, 0);
+  }
 }
 </style>
