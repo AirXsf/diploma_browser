@@ -23,6 +23,7 @@
       @blur="affirmPw"
       @input="checkPw"
       :class="{ redBorder: redP == 1 }"
+      @keyup.enter.native="register"
     ></el-input>
     <el-button @click="register" :class="{gray:bgGray==1}" :disabled="disInfo">{{registerInfo}}</el-button>
   </div>
@@ -152,6 +153,7 @@ export default {
           .post("http://localhost:4000/register", obj, { emulateJSON: true })
           .then(
             response => {
+              console.log(response.body);
               if (response.body.flag == 1) {
                 /*注册成功写入后(切换路由路由数据会重新刷新会默认值,所以此处不需要设置)
                 this.disInfo = false;

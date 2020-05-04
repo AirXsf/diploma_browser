@@ -3,14 +3,40 @@
 let htmlPlugin = require('./node_modules/html-webpack-plugin');
 let path = require('path');
 module.exports = {
+  //入口文件(可指定多个html和js);
+  entry: {
+    one: path.join(__dirname, './src/index.js'),
+    two: path.join(__dirname, './src/goods.js'),
+    three: path.join(__dirname, './src/detail.js'),
+  },
+  //出口文件(只要几个即可,前面为name序号)
+  output: {
+    path: path.join(__dirname, './dist'),
+    filename: '[name].main.js',
+  },
   plugins: [
     //插件的配置节点
     new htmlPlugin({
       //创建一个在内存中生成html的插件(根据磁盘中的文件)
       //指定模板文件的路径
-      template: path.join(__dirname, './src/index.html'), 
+      template: path.join(__dirname, './src/index.html'),
       //生成内存的页面filename要与磁盘上一致
-      filename: 'index.html', 
+      filename: 'index.html',
+      hash: true,
+      chunks: ['one'],
+    }),
+    //打包多个html文件
+    new htmlPlugin({
+      template: path.join(__dirname, './src/goods.html'),
+      filename: 'goods.html',
+      hash: true,
+      chunks: ['two'],
+    }),
+    new htmlPlugin({
+      template: path.join(__dirname, './src/detail.html'),
+      filename: 'detail.html',
+      hash: true,
+      chunks: ['three'],
     }),
   ],
   module: {

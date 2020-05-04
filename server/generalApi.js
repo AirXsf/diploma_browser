@@ -14,13 +14,13 @@ exports.connectDB = (sql, data, callback1, sqlSolve, callback2) => {
   connection.connect(); //连接数据库
 
   //操作数据库(查询)
-  connection.query(sql, data, function (error, results, fields) {
+  connection.query(sql, data, function(error, results, fields) {
     if (error) throw error;
     callback1(results);
   });
 
   if (paramSqlSolve) {
-    connection.query(paramSqlSolve, null, function (error, results, fields) {
+    connection.query(paramSqlSolve, null, function(error, results, fields) {
       if (error) throw error;
       paramCallback2();
     });

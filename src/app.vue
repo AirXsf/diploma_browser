@@ -11,38 +11,59 @@
     >
       <el-submenu index="1">
         <template slot="title">关于本站</template>
-        <el-menu-item index="2.1">课题:优闲二手交易</el-menu-item>
-        <el-menu-item index="2.2">借鉴:咸鱼APP</el-menu-item>
-        <el-menu-item index="2.3">合作:VX-TRHXN50</el-menu-item>
-        <el-submenu index="2.4">
+        <el-menu-item index="1-1">课题:优闲二手交易</el-menu-item>
+        <el-menu-item index="1-2">借鉴:咸鱼APP</el-menu-item>
+        <el-menu-item index="1-3">合作:VX-TRHXN50</el-menu-item>
+        <el-submenu index="1-4">
           <template slot="title">开发者</template>
-          <el-menu-item index="3.1">姓名:小思服</el-menu-item>
-          <el-menu-item index="3.2">项目:毕业设计</el-menu-item>
-          <el-menu-item index="3.3">毕业院校:合肥学院</el-menu-item>
+          <el-menu-item index="1-4-1">姓名:小思服</el-menu-item>
+          <el-menu-item index="1-4-2">项目:毕业设计</el-menu-item>
+          <el-menu-item index="1-4-3">毕业院校:合肥学院</el-menu-item>
         </el-submenu>
       </el-submenu>
 
       <el-menu-item index="2" @click="jump">
-        <i class="el-icon-headset"></i>首页
+        <i class="el-icon-headset"></i>
+        <span>首页</span>
       </el-menu-item>
 
-      <el-menu-item index="3" @click="dialog = true">
-        <i class="el-icon-s-custom"></i>我的
+      <el-menu-item index="3" @click="drawer">
+        <i class="el-icon-s-custom"></i>
+        <span>我的</span>
       </el-menu-item>
 
-      <el-menu-item index="4" @click="table = true">
-        <i class="el-icon-shopping-cart-full"></i>购物车
+      <el-menu-item index="4" @click="collect">
+        <el-badge :value="collectNumber" type="info">
+          <i class="el-icon-folder"></i>
+          <span>收藏夹</span>
+        </el-badge>
       </el-menu-item>
-      <el-menu-item index="5" @click="open">
+
+      <el-menu-item index="5">
+        <i class="el-icon-shopping-cart-full"></i>
+        <span>购物车</span>
+      </el-menu-item>
+
+      <el-menu-item index="6" v-show="flag1" @click="open">
         <i class="el-icon-sort"></i>
-        登录/注册
+        <span>登录/注册</span>
       </el-menu-item>
+
+      <el-submenu index="7" v-show="flag2">
+        <template slot="title">
+          <i class="el-icon-male"></i>
+          <span>你好,{{username}}</span>
+        </template>
+        <el-menu-item index="7-1" @click="ruin">
+          <span>注销账号</span>
+        </el-menu-item>
+      </el-submenu>
     </el-menu>
     <!--Element跑马灯的组件-->
     <el-carousel :interval="4000" type="card" :height="bannerH + 'px'">
-      <el-carousel-item v-for="item in bannerList" :key="item.img">
+      <el-carousel-item v-for="(item,index) in bannerList" :key="item.img">
         <h3 class="medium">
-          <img :src="item.img" @click="open" />
+          <img :src="item.img" @click="homeGoods(index)" />
         </h3>
       </el-carousel-item>
     </el-carousel>
@@ -55,7 +76,7 @@
       </el-col>
       <!--价格选项款-->
       <el-col :span="3">
-        <el-select v-model="goodsPrice" placeholder="请选择价格(可选)" class="special">
+        <el-select placeholder="请选择价格(可选)" v-model="value" class="special">
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -66,13 +87,13 @@
       </el-col>
       <!--go按钮-->
       <el-col :span="2">
-        <el-button plain round class="goButton">Go</el-button>
+        <el-button plain round class="goButton" @click="go">Go</el-button>
       </el-col>
       <!--几成新-->
       <el-col :span="3" :offset="2">
         <div class="block">
-          <span class="demonstration">几成新(可选)---{{ quality }}</span>
-          <el-slider class="slider" v-model="quality" :step="1" :max="10" show-stops></el-slider>
+          <span class="demonstration">几成新(可选)---{{ goodsQuality }}</span>
+          <el-slider class="slider" v-model="goodsQuality" :step="1" :max="10" show-stops></el-slider>
         </div>
       </el-col>
     </el-row>
@@ -89,16 +110,16 @@
           <!--内容-->
           <el-row>
             <transition-group>
-              <el-col :span="4" v-for="item in displayData" :key="item.id">
-                <img :src="item.img" @click="open" />
+              <el-col :span="4" v-for="(item,index) in displayData" :key="item.id">
+                <el-image fit="fill" :src="item.img" @click="aiGoods(index)" />
                 <div class="information">
                   <el-row>
                     <el-col :span="24">
-                      <a @click.prevent="open">
+                      <a @click.prevent="aiGoods(index)">
                         <span>{{ item.name }}</span>
                       </a>
                       <el-divider direction="vertical"></el-divider>
-                      <a @click.prevent="open">
+                      <a @click.prevent="aiGoods(index)">
                         <span>{{ item.price }}</span>
                       </a>
                     </el-col>
@@ -110,7 +131,7 @@
                   </el-row>
                   <el-row>
                     <el-col :span="24">
-                      <a @click.prevent="open">
+                      <a @click.prevent="aiGoods(index)">
                         <span>{{ item.description }}</span>
                       </a>
                     </el-col>
@@ -126,7 +147,7 @@
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
                 :current-page.sync="currentPage"
-                :page-sizes="[12,6]"
+                :page-sizes="[12, 6]"
                 layout="total, sizes, prev, pager, next, jumper"
                 :total="24"
                 background
@@ -142,16 +163,16 @@
 
           <el-row>
             <transition-group>
-              <el-col :span="4" v-for="item in displayData" :key="item.id">
-                <img :src="item.img" @click="open" />
+              <el-col :span="4" v-for="(item,index) in displayData" :key="item.id">
+                <el-image fit="fill" :src="item.img" @click="shoeGoods(index)" />
                 <div class="information">
                   <el-row>
                     <el-col :span="24">
-                      <a @click.prevent="open">
+                      <a @click.prevent="shoeGoods(index)">
                         <span>{{ item.name }}</span>
                       </a>
                       <el-divider direction="vertical"></el-divider>
-                      <a @click.prevent="open">
+                      <a @click.prevent="shoeGoods(index)">
                         <span>{{ item.price }}</span>
                       </a>
                     </el-col>
@@ -163,7 +184,7 @@
                   </el-row>
                   <el-row>
                     <el-col :span="24">
-                      <a @click.prevent="open">
+                      <a @click.prevent="shoeGoods(index)">
                         <span>{{ item.description }}</span>
                       </a>
                     </el-col>
@@ -195,16 +216,16 @@
 
           <el-row>
             <transition-group>
-              <el-col :span="4" v-for="item in displayData" :key="item.id">
-                <img :src="item.img" @click="open" />
+              <el-col :span="4" v-for="(item,index) in displayData" :key="item.id">
+                <el-image fit="fill" :src="item.img" @click="bookGoods(index)" />
                 <div class="information">
                   <el-row>
                     <el-col :span="24">
-                      <a @click.prevent="open">
+                      <a @click.prevent="bookGoods(index)">
                         <span>{{ item.name }}</span>
                       </a>
                       <el-divider direction="vertical"></el-divider>
-                      <a @click.prevent="open">
+                      <a @click.prevent="bookGoods(index)">
                         <span>{{ item.price }}</span>
                       </a>
                     </el-col>
@@ -216,7 +237,7 @@
                   </el-row>
                   <el-row>
                     <el-col :span="24">
-                      <a @click.prevent="open">
+                      <a @click.prevent="bookGoods(index)">
                         <span>{{ item.description }}</span>
                       </a>
                     </el-col>
@@ -248,16 +269,16 @@
 
           <el-row>
             <transition-group>
-              <el-col :span="4" v-for="item in displayData" :key="item.id">
-                <img :src="item.img" @click="open" />
+              <el-col :span="4" v-for="(item,index) in displayData" :key="item.id">
+                <el-image fit="fill" :src="item.img" @click="musicGoods(index)" />
                 <div class="information">
                   <el-row>
                     <el-col :span="24">
-                      <a @click.prevent="open">
+                      <a @click.prevent="musicGoods(index)">
                         <span>{{ item.name }}</span>
                       </a>
                       <el-divider direction="vertical"></el-divider>
-                      <a @click.prevent="open">
+                      <a @click.prevent="musicGoods(index)">
                         <span>{{ item.price }}</span>
                       </a>
                     </el-col>
@@ -269,7 +290,7 @@
                   </el-row>
                   <el-row>
                     <el-col :span="24">
-                      <a @click.prevent="open">
+                      <a @click.prevent="musicGoods(index)">
                         <span>{{ item.description }}</span>
                       </a>
                     </el-col>
@@ -296,44 +317,160 @@
       </el-tabs>
     </el-row>
 
-    <!--抽屉左模块 -->
+    <!--我的模块 -->
     <el-drawer
-      title="我嵌套了 Form !"
-      :before-close="handleClose"
+      title="我的信息(此处不显示,因为设置了:with-header)!"
+      :before-close="handleClose1"
       :visible.sync="dialog"
-      direction="ltr"
       custom-class="demo-drawer"
       ref="drawer"
+      :with-header="false"
+      size="32%"
     >
       <div class="demo-drawer__content">
+        <!--外面的抽屉-->
+        <p>
+          <i class="el-icon-user"></i>
+          我的信息:
+          <span v-show="flag3">每个信息都不能为空哦</span>
+        </p>
         <el-form :model="form">
-          <el-form-item label="活动名称" :label-width="formLabelWidth">
-            <el-input v-model="form.name" autocomplete="off"></el-input>
+          <el-form-item label="会员名" :label-width="formLabelWidth">
+            <el-input placeholder="请输入会员名" v-model="form.member" autocomplete="off"></el-input>
           </el-form-item>
-          <el-form-item label="活动区域" :label-width="formLabelWidth">
-            <el-select v-model="form.region" placeholder="请选择活动区域">
-              <el-option label="区域一" value="shanghai"></el-option>
-              <el-option label="区域二" value="beijing"></el-option>
+
+          <el-form-item label="性别" :label-width="formLabelWidth">
+            <el-select v-model="form.sex" placeholder="请选择">
+              <el-option label="男" value="男"></el-option>
+              <el-option label="女" value="女"></el-option>
             </el-select>
           </el-form-item>
+
+          <el-form-item label="年龄" :label-width="formLabelWidth">
+            <el-input placeholder="年龄" v-model="form.age" autocomplete="off"></el-input>
+          </el-form-item>
+
+          <el-form-item label="毕业院校" :label-width="formLabelWidth">
+            <el-input
+              placeholder="请输入毕业院校"
+              v-model="form.college"
+              autocomplete="off"
+              @keyup.enter.native="$refs.drawer.closeDrawer()"
+            ></el-input>
+          </el-form-item>
         </el-form>
-        <div class="demo-drawer__footer">
-          <el-button @click="cancelForm">取 消</el-button>
-          <el-button
-            type="primary"
-            @click="$refs.drawer.closeDrawer()"
-            :loading="loading"
-          >{{ loading ? '提交中 ...' : '确 定' }}</el-button>
+        <div class="demo-drawer__footer el-row">
+          <el-col :span="6" :offset="4">
+            <el-button @click="cancelForm1">取 消</el-button>
+          </el-col>
+          <el-col :span="6" :offset="3">
+            <el-button
+              type="primary"
+              @click="$refs.drawer.closeDrawer()"
+              :loading="loading"
+            >{{ loading ? '提交中 ...' : '提交' }}</el-button>
+          </el-col>
+        </div>
+        <p>
+          <i class="el-icon-truck"></i>
+          <i style="font-style:normal">我的地址:</i>
+        </p>
+        <div>
+          <el-col :offset="4">
+            <el-button @click="innerDrawer = true">单击前往</el-button>
+          </el-col>
+          <!--里面的抽屉-->
+          <el-drawer
+            title="我是里面的"
+            :append-to-body="true"
+            :visible.sync="innerDrawer"
+            size="26%"
+            :with-header="false"
+          >
+            <p>
+              <i class="el-icon-truck"></i>
+              我的地址:
+              <span v-show="flag4">每个信息都不能为空哦</span>
+            </p>
+            <el-form :model="form">
+              <el-form-item label="姓名" :label-width="formLabelWidth">
+                <el-input v-model="form.name" placeholder="请输入姓名" autocomplete="off"></el-input>
+              </el-form-item>
+
+              <el-form-item label="电话" :label-width="formLabelWidth">
+                <el-input v-model="form.number" placeholder="请输入11位电话号码" autocomplete="off"></el-input>
+              </el-form-item>
+
+              <el-form-item label="邮政编码" :label-width="formLabelWidth">
+                <el-input v-model="form.postCode" placeholder="请输入所在6位地区邮政编码" autocomplete="off"></el-input>
+              </el-form-item>
+
+              <el-form-item label="地址" :label-width="formLabelWidth">
+                <el-input
+                  type="textarea"
+                  :rows="2"
+                  placeholder="请输入具体地址"
+                  v-model="form.address"
+                  autocomplete="off"
+                  @keyup.enter.native="handleClose2"
+                ></el-input>
+              </el-form-item>
+            </el-form>
+
+            <div class="demo-drawer__footer el-row">
+              <el-col :span="6" :offset="4">
+                <el-button @click="cancelForm2">取 消</el-button>
+              </el-col>
+              <el-col :span="6" :offset="3">
+                <el-button
+                  type="primary"
+                  @click="handleClose2"
+                  :loading="loading"
+                >{{ loading ? '提交中 ...' : '提交' }}</el-button>
+              </el-col>
+            </div>
+          </el-drawer>
         </div>
       </div>
     </el-drawer>
 
-    <!--抽屉右模块 -->
-    <el-drawer title="我嵌套了表格!" :visible.sync="table" direction="rtl" size="50%">
-      <el-table :data="gridData">
-        <el-table-column property="date" label="日期" width="150"></el-table-column>
-        <el-table-column property="name" label="姓名" width="200"></el-table-column>
-        <el-table-column property="address" label="地址"></el-table-column>
+    <!--收藏夹模块 -->
+    <el-drawer
+      title="收藏夹!"
+      :visible.sync="table"
+      size="35%"
+      label="ltr"
+      :with-header="false"
+      direction="rtl"
+    >
+      <div class="newTitle">
+        <el-col :span="12">
+          <i class="el-icon-folder"></i>
+          <span>收藏夹</span>
+        </el-col>
+        <el-col :span="1" :offset="9">
+          <button type="button" @click="closeCollect" class="el-drawer__close-btn">
+            <i class="el-dialog__close el-icon el-icon-close"></i>
+          </button>
+        </el-col>
+      </div>
+
+      <el-table :data="tableData" style="width: 100%">
+        <el-table-column prop="name" label="商品名" width="120"></el-table-column>
+        <el-table-column prop="price" label="价格" width="120"></el-table-column>
+
+        <el-table-column prop="img" width="120" label="图片">
+          <!--插入图片链接的代码-->
+          <template slot-scope="scope">
+            <img :src="scope.row.img" alt style="width: 50px;height: 50px" />
+          </template>
+        </el-table-column>
+
+        <el-table-column label="操作" width="137">
+          <template slot-scope="scope">
+            <el-link type="danger" @click="remove(scope.row.name)">移去</el-link>
+          </template>
+        </el-table-column>
       </el-table>
     </el-drawer>
 
@@ -358,7 +495,7 @@
               <router-link to="/register">注册</router-link>
               <router-link to="/login">登录</router-link>
 
-              <router-view></router-view>
+              <router-view @success="success(arguments)"></router-view>
             </p>
           </div>
         </div>
@@ -371,6 +508,12 @@
 export default {
   data() {
     return {
+      //用户名
+      username: "",
+      //登录,注册
+      flag1: true,
+      //注销,账户
+      flag2: false,
       //弹框
       flag: false,
       //banner数据
@@ -378,10 +521,14 @@ export default {
       bannerList: [],
 
       //主页图片数据
+      allList: [],
       aiList: [],
       shoeList: [],
       bookList: [],
       musicList: [],
+
+      //筛选的数组
+      newList: [],
 
       //默认激活页头组件的第一个模块
       activeIndex: "2",
@@ -409,12 +556,15 @@ export default {
           label: ">3000"
         }
       ],
+
       //商品名
       goodsName: "",
+
       //商品价格
-      goodsPrice: "",
+      value: "",
+
       //几成新的值
-      quality: 0,
+      goodsQuality: 0,
 
       //控制分页的现在页数
       currentPage: 1,
@@ -426,37 +576,36 @@ export default {
       //激活的卡片
       activeName: "first",
 
-      //抽屉数据
-      table: false,
+      //抽屉数据(gross)
       dialog: false,
       loading: false,
-      //抽屉表格值
-      gridData: [
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        }
-      ],
+
+      //外抽屉提示
+      flag3: false,
+      //内抽屉提示
+      flag4: false,
+
+      //里面数据
+      innerDrawer: false,
       //抽屉表单中数据
       form: {
+        //我的信息
+        //用户名
+        member: "",
+        //性别
+        sex: "",
+        //年龄
+        age: "",
+        //院校:"",
+        college: "",
+
+        //收货信息
         name: "",
-        region: "",
+        number: "",
+        address: "",
+        postCode: "",
+
+        //下面的变量是elementUi抽屉带的,没发现有啥用
         date1: "",
         date2: "",
         delivery: false,
@@ -465,28 +614,75 @@ export default {
         desc: ""
       },
       formLabelWidth: "80px",
-      timer: null
+
+      //计时器
+      timer: null,
+
+      //个人收藏夹的数据
+      table: false,
+      tableData: [],
+
+      //控制不重复收藏
+      reCollect: true,
+
+      //收藏变红
+      flag10: 0,
+
+      //收藏提示
+      ifCollect: "收藏商品",
+
+      //收藏量
+      collectNumber: null
     };
   },
+
+  //created中的函数会在加载时执行
   created() {
+    //加载页面
+
+    //判断有没有登录,登陆后刷新还存在此状态
+    if (localStorage.getItem("token")) {
+      this.flag1 = false;
+      this.username = JSON.parse(localStorage.getItem("token")).username;
+      this.flag2 = true;
+    }
+
+    //获取外抽屉的信息
+    this.getInfo();
+
+    //获取内抽屉的信息
+    this.getInnerInfo();
+
     //拿取后台跑马灯数据
     this.renderBanner();
+
     //拿取后台主页数据
     this.renderHome();
     setTimeout(() => {
       this.homeSize(this.aiList);
     }, 800);
+
+    //获取收藏夹中的信息
+    this.getCollect();
   },
   mounted() {
     //图片自适应高度
     this.setBannerH();
+
+    /* 不需要清理localstorage
     window.addEventListener(
       "resize",
       () => {
         this.setBannerH();
       },
       false
-    );
+    ),
+      //监控关闭浏览器事件
+      window.addEventListener("beforeunload", e => {
+        //清空本地localstorage
+        localStorage.clear();
+      });
+    */
   },
   methods: {
     //图片自适应高度
@@ -512,6 +708,7 @@ export default {
       this.$http.jsonp("http://localhost:4000/getHome").then(
         response => {
           console.log(response.body);
+          this.allList = response.body;
           response.body.forEach((item, index) => {
             if (item.category == "电子产品") {
               this.aiList.push(item);
@@ -621,45 +818,778 @@ export default {
       }
     },
 
-    //跳转页面
+    //跳转主页
     jump() {
       window.location.href = "/";
     },
 
-    //注册登录
+    //注册登录的显示
     open() {
       //取消滚动条
       this.flag = true;
       document.querySelector("#x").style = "overflow:hidden";
       window.location.href = "/#/login";
     },
+
+    //注册登录的关闭
     close() {
       this.flag = false;
       window.location.href = "/#/";
       document.querySelector("#x").style = "overflow:visible";
     },
-    //抽屉方法
-    handleClose(done) {
-      if (this.loading) {
+
+    //子通过此方法修改父的值(多参数这么修改)
+    success(msg) {
+      this.flag1 = msg[0];
+      //传入token的name
+      this.username = msg[1];
+      this.flag2 = msg[2];
+    },
+
+    //搜索按钮单击
+    go() {
+      //取localstorage中的token,判断有没有登录状态,有才能搜索,没有直接跳到登录状态
+      this.onLogin(() => {
+        //每次重新go的时候,清空
+        this.newList = [];
+
+        //商品名(去空格)
+        var name = this.goodsName.replace(/\s*/g, "");
+        //价格
+        var price = this.value;
+        //质量
+        var quality = this.goodsQuality;
+
+        //第一种情况啥都没有提示
+        if ((name == "") & (price == "") & (quality == 0)) {
+          this.$notify.error({
+            title: "提示",
+            message: "请输入商品名,价格或几成新",
+            type: "warning"
+          });
+          return;
+        }
+
+        //第二种情况(只有商品名,检索商品名和描述)
+        if ((name != "") & (price == "") & (quality == 0)) {
+          this.allList.forEach((item, index) => {
+            if (
+              item.name.indexOf(name) != -1 ||
+              item.description.indexOf(name) != -1
+            ) {
+              this.newList.push(item);
+            }
+          });
+          console.log(this.newList);
+        }
+        //第三种情况(只有价格时)
+        if ((name == "") & (price != "") & (quality == 0)) {
+          this.allList.forEach((item, index) => {
+            switch (price) {
+              case "选项1":
+                //去掉￥判断
+                if (item.price.replace("￥", "") <= 500) {
+                  this.newList.push(item);
+                }
+                break;
+
+              case "选项2":
+                //去掉￥判断
+                if (
+                  (500 < item.price.replace("￥", "")) &
+                  (item.price.replace("￥", "") <= 1000)
+                ) {
+                  this.newList.push(item);
+                }
+                break;
+
+              case "选项3":
+                //去掉￥判断
+                if (
+                  (1000 < item.price.replace("￥", "")) &
+                  (item.price.replace("￥", "") <= 2000)
+                ) {
+                  this.newList.push(item);
+                }
+                break;
+
+              case "选项4":
+                //去掉￥判断
+                if (
+                  (2000 < item.price.replace("￥", "")) &
+                  (item.price.replace("￥", "") <= 3000)
+                ) {
+                  this.newList.push(item);
+                }
+                break;
+
+              case "选项5":
+                //去掉￥判断
+                if (item.price.replace("￥", "") > 3000) {
+                  this.newList.push(item);
+                }
+                break;
+            }
+          });
+          console.log(this.newList);
+        }
+
+        //第四种情况(只有几成新时)
+        if ((name == "") & (price == "") & (quality != 0)) {
+          //成几成新
+          var quality1 = quality + "成新";
+          this.allList.forEach((item, index) => {
+            if (item.description.indexOf(quality1) != -1) {
+              this.newList.push(item);
+            }
+          });
+          console.log(this.newList);
+        }
+
+        //第五种情况(商品名+价格)
+        if ((name != "") & (price != "") & (quality == 0)) {
+          this.allList.forEach((item, index) => {
+            switch (price) {
+              case "选项1":
+                //去掉￥判断
+                if (
+                  (item.price.replace("￥", "") <= 500) &
+                  (item.name.indexOf(name) != -1 ||
+                    item.description.indexOf(name) != -1)
+                ) {
+                  this.newList.push(item);
+                }
+                break;
+              case "选项2":
+                //去掉￥判断
+                if (
+                  (500 < item.price.replace("￥", "")) &
+                  (item.price.replace("￥", "") <= 1000) &
+                  (item.name.indexOf(name) != -1 ||
+                    item.description.indexOf(name) != -1)
+                ) {
+                  this.newList.push(item);
+                }
+                break;
+
+              case "选项3":
+                //去掉￥判断
+                if (
+                  (1000 < item.price.replace("￥", "")) &
+                  (item.price.replace("￥", "") <= 2000) &
+                  (item.name.indexOf(name) != -1 ||
+                    item.description.indexOf(name) != -1)
+                ) {
+                  this.newList.push(item);
+                }
+                break;
+
+              case "选项4":
+                console.log("哈哈");
+                //去掉￥判断
+                if (
+                  (2000 < item.price.replace("￥", "")) &
+                  (item.price.replace("￥", "") <= 3000) &
+                  (item.name.indexOf(name) != -1 ||
+                    item.description.indexOf(name) != -1)
+                ) {
+                  this.newList.push(item);
+                }
+                break;
+
+              case "选项5":
+                //去掉￥判断
+                if (
+                  (item.price.replace("￥", "") > 3000) &
+                  (item.name.indexOf(name) != -1 ||
+                    item.description.indexOf(name) != -1)
+                ) {
+                  this.newList.push(item);
+                }
+                break;
+            }
+          });
+          console.log(this.newList);
+        }
+
+        //第六种情况(商品名+几成新)
+        if ((name != "") & (price == "") & (quality != 0)) {
+          var quality1 = quality + "成新";
+          this.allList.forEach((item, index) => {
+            if (
+              (item.name.indexOf(name) != -1 ||
+                item.description.indexOf(name) != -1) &
+              (item.description.indexOf(quality1) != -1)
+            ) {
+              this.newList.push(item);
+            }
+          });
+          console.log(this.newList);
+        }
+
+        //第七种情况(价格+几成新)
+        if ((name == "") & (price != "") & (quality != 0)) {
+          //几成新
+          var quality1 = quality + "成新";
+
+          this.allList.forEach((item, index) => {
+            switch (price) {
+              case "选项1":
+                //去掉￥判断
+                if (
+                  (item.price.replace("￥", "") <= 500) &
+                  (item.description.indexOf(quality) != -1)
+                ) {
+                  this.newList.push(item);
+                }
+                break;
+              case "选项2":
+                //去掉￥判断
+                if (
+                  (500 < item.price.replace("￥", "")) &
+                  (item.price.replace("￥", "") <= 1000) &
+                  (item.description.indexOf(quality) != -1)
+                ) {
+                  this.newList.push(item);
+                }
+                break;
+
+              case "选项3":
+                //去掉￥判断
+                if (
+                  (1000 < item.price.replace("￥", "")) &
+                  (item.price.replace("￥", "") <= 2000) &
+                  (item.description.indexOf(quality) != -1)
+                ) {
+                  this.newList.push(item);
+                }
+                break;
+
+              case "选项4":
+                console.log("哈哈");
+                //去掉￥判断
+                if (
+                  (2000 < item.price.replace("￥", "")) &
+                  (item.price.replace("￥", "") <= 3000) &
+                  (item.description.indexOf(quality) != -1)
+                ) {
+                  this.newList.push(item);
+                }
+                break;
+
+              case "选项5":
+                //去掉￥判断
+                if (
+                  (item.price.replace("￥", "") > 3000) &
+                  (item.description.indexOf(quality) != -1)
+                ) {
+                  this.newList.push(item);
+                }
+                break;
+            }
+          });
+          console.log(this.newList);
+        }
+
+        //第八种情况(商品名+价格+几成新)
+        if ((name != "") & (price != "") & (quality != 0)) {
+          var quality1 = quality + "成新";
+          this.allList.forEach((item, index) => {
+            switch (price) {
+              case "选项1":
+                //去掉￥判断
+                if (
+                  (item.price.replace("￥", "") <= 500) &
+                  (item.name.indexOf(name) != -1 ||
+                    item.description.indexOf(name) != -1) &
+                  (item.description.indexOf(quality1) != -1)
+                ) {
+                  this.newList.push(item);
+                }
+                break;
+              case "选项2":
+                //去掉￥判断
+                if (
+                  (500 < item.price.replace("￥", "")) &
+                  (item.price.replace("￥", "") <= 1000) &
+                  (item.name.indexOf(name) != -1 ||
+                    item.description.indexOf(name) != -1) &
+                  (item.description.indexOf(quality1) != -1)
+                ) {
+                  this.newList.push(item);
+                }
+                break;
+
+              case "选项3":
+                //去掉￥判断
+                if (
+                  (1000 < item.price.replace("￥", "")) &
+                  (item.price.replace("￥", "") <= 2000) &
+                  (item.name.indexOf(name) != -1 ||
+                    item.description.indexOf(name) != -1) &
+                  (item.description.indexOf(quality1) != -1)
+                ) {
+                  this.newList.push(item);
+                }
+                break;
+
+              case "选项4":
+                //去掉￥判断
+                if (
+                  (2000 < item.price.replace("￥", "")) &
+                  (item.price.replace("￥", "") <= 3000) &
+                  (item.name.indexOf(name) != -1 ||
+                    item.description.indexOf(name) != -1) &
+                  (item.description.indexOf(quality1) != -1)
+                ) {
+                  this.newList.push(item);
+                }
+                break;
+
+              case "选项5":
+                //去掉￥判断
+                if (
+                  (item.price.replace("￥", "") > 3000) &
+                  (item.name.indexOf(name) != -1 ||
+                    item.description.indexOf(name) != -1) &
+                  (item.description.indexOf(quality1) != -1)
+                ) {
+                  this.newList.push(item);
+                }
+                break;
+            }
+          });
+          console.log(this.newList);
+        }
+
+        //把筛选后的数组发送过去(先转为json字符串)
+        var newList = JSON.stringify(this.newList);
+        //url传值的方式会对url有限制(所以不用这种方式);
+        //window.open("./goods.html?val=" + newList);
+
+        //用sessionStorage(每次发送会覆盖前面的值)
+        sessionStorage.setItem("search", newList);
+        window.open("./goods.html");
+      });
+    },
+
+    //封装判断登录状态的方法
+    onLogin(func) {
+      //如果存在localStorage中的token
+      if (localStorage.getItem("token")) {
+        func();
+      } else {
+        this.$notify({
+          title: "提示",
+          message: "你好,请先登录",
+          type: "warning"
+        });
+        this.open();
+      }
+    },
+
+    //注销账号
+    ruin() {
+      //清空token
+      window.localStorage.clear();
+      //刷新页面
+      window.location.reload();
+    },
+
+    //判断抽屉能不能打开(登录了吗?)
+    drawer() {
+      this.onLogin(() => {
+        this.dialog = true;
+      });
+    },
+
+    //外面抽屉方法(单击提交时)
+    handleClose1(done) {
+      //判断文本框不能为空,为空不能提交
+      if (
+        (this.form.member == "") |
+        (this.form.sex == "") |
+        (this.form.age == "") |
+        (this.form.college == "")
+      ) {
+        this.flag3 = true;
+        return;
+      } else if (this.loading) {
         return;
       }
-      this.$confirm("确定要提交表单吗？")
-        .then(_ => {
-          this.loading = true;
-          this.timer = setTimeout(() => {
-            done();
-            // 动画关闭需要一定的时间
-            setTimeout(() => {
-              this.loading = false;
-            }, 400);
-          }, 2000);
-        })
-        .catch(_ => {});
+      this.loading = true;
+      //发送Ajax请求,修改对象的信息值
+      //拿出token,作为参数传递
+      var token = JSON.parse(localStorage.getItem("token")).msg;
+      var obj = {
+        member: this.form.member,
+        sex: this.form.sex,
+        age: this.form.age,
+        college: this.form.college,
+        token: token
+      };
+      this.$http.post("http://localhost:4000/alterInfo", obj).then(
+        response => {
+          console.log(response.body);
+          if (response.body.flag == 1) {
+            //关闭抽屉,显示更新成功
+            this.timer = setTimeout(() => {
+              done();
+              // 动画关闭需要一定的时间
+              setTimeout(() => {
+                this.loading = false;
+                this.dialog = false;
+                this.$notify({
+                  title: "成功",
+                  message: "更新成功",
+                  type: "success"
+                });
+                //去掉提示
+                this.flag3 = false;
+                //提示成功后,查询新的我的值
+                this.getInfo();
+              }, 400);
+            }, 1500);
+          }
+        },
+        response => {
+          console.log("请求失败");
+        }
+      );
     },
-    cancelForm() {
+
+    //取消外面抽屉
+    cancelForm1() {
       this.loading = false;
       this.dialog = false;
       clearTimeout(this.timer);
+    },
+
+    //里面抽屉的方法
+    handleClose2(done) {
+      //判断不能
+      if (
+        (this.form.name == "") |
+        (this.form.number == "") |
+        (this.form.postCode == "") |
+        (this.form.address == "")
+      ) {
+        this.flag4 = true;
+        return;
+      } else if (this.loading) {
+        return;
+      }
+      this.loading = true;
+      var token = JSON.parse(localStorage.getItem("token")).msg;
+      var obj = {
+        name: this.form.name,
+        number: this.form.number,
+        postCode: this.form.postCode,
+        address: this.form.address,
+        token: token
+      };
+      this.$http.post("http://localhost:4000/alterInnerInfo", obj).then(
+        response => {
+          console.log(response.body);
+          if (response.body.flag == 1) {
+            //关闭抽屉,显示更新成功
+            this.timer = setTimeout(() => {
+              // 动画关闭需要一定的时间
+              setTimeout(() => {
+                this.loading = false;
+                this.innerDrawer = false;
+                this.$notify({
+                  title: "成功",
+                  message: "更新成功",
+                  type: "success",
+                  position: "bottom-right"
+                });
+                //去掉提示
+                this.flag4 = false;
+                //提示成功后,查询新的我的值
+                this.getInnerInfo();
+              }, 400);
+            }, 1500);
+          }
+        },
+        response => {
+          console.log("请求失败");
+        }
+      );
+    },
+
+    //取消里面的抽屉
+    cancelForm2() {
+      this.loading = false;
+      this.innerDrawer = false;
+      clearTimeout(this.timer);
+    },
+
+    //拿数据渲染外抽屉
+    getInfo() {
+      if (localStorage.getItem("token")) {
+        var obj = {
+          username: this.username
+        };
+        this.$http.get("http://localhost:4000/getInfo", { params: obj }).then(
+          response => {
+            var info = response.body;
+            console.log(info);
+            if (info.flag == 0) {
+              console.log("回调中的return没用");
+            } else if ((info.flag == 1) & (info.member == null)) {
+              this.form.member = "";
+              this.form.sex = "";
+              this.form.age = "";
+              this.form.college = "";
+            } else {
+              this.form.member = info.member;
+              this.form.sex = info.sex;
+              this.form.age = info.age;
+              this.form.college = info.college;
+            }
+          },
+          response => {
+            console.log("获取失败");
+          }
+        );
+      }
+    },
+
+    //拿数据渲染内抽屉
+    getInnerInfo() {
+      if (localStorage.getItem("token")) {
+        var obj = {
+          username: this.username
+        };
+        this.$http
+          .get("http://localhost:4000/getInnerInfo", { params: obj })
+          .then(
+            response => {
+              var info = response.body;
+              console.log(info);
+              if (info.flag == 0) {
+                console.log("回调中的return无效");
+              } else if ((info.flag == 1) & (info.name == null)) {
+                this.form.name = "";
+                this.form.number = "";
+                this.form.postCode = "";
+                this.form.address = "";
+              } else {
+                this.form.name = info.name;
+                this.form.number = info.number;
+                this.form.postCode = info.postCode;
+                this.form.address = info.address;
+              }
+            },
+            response => {
+              console.log("获取失败");
+            }
+          );
+      }
+    },
+
+    //判断跑马灯是否能够跳转,跳转到详细页面(评论和细节)
+    homeGoods(index) {
+      this.onLogin(() => {
+        console.log(index);
+        //组织好点击的数据存到sessionStorage中发送给详细页面
+        var obj = {};
+        if (index == 0) {
+          obj = this.allList[1];
+        }
+        if (index == 1) {
+          obj = this.allList[19];
+        }
+        if (index == 2) {
+          obj = this.allList[6];
+        }
+        if (index == 3) {
+          obj = this.allList[0];
+        }
+        if (index == 4) {
+          obj = this.allList[2];
+        }
+        if (index == 5) {
+          obj = this.allList[22];
+        }
+        //把数据存到sessionStorage中
+        sessionStorage.setItem("detail", JSON.stringify(obj));
+
+        //再跳转到详细的商品页面
+        window.open("./detail.html");
+      });
+    },
+
+    //判断电子产品区goods是否能够跳转,跳转到详细页面(评论和细节)
+    aiGoods(index) {
+      this.onLogin(() => {
+        var index1 = index;
+
+        if ((this.currentPage == 2) & (this.pageSize == 12)) {
+          index1 = index1 + 12;
+        }
+        if ((this.pageSize == 6) & (this.currentPage == 2)) {
+          index1 = index1 + 6;
+        }
+        if ((this.pageSize == 6) & (this.currentPage == 3)) {
+          index1 = index1 + 12;
+        }
+        if ((this.pageSize == 6) & (this.currentPage == 4)) {
+          index1 = index1 + 18;
+        }
+        var obj = this.aiList[index1];
+        //把数据存到sessionStorage中
+        sessionStorage.setItem("detail", JSON.stringify(obj));
+
+        //再跳转到详细的商品页面
+        window.open("./detail.html");
+      });
+    },
+
+    //判断鞋子区goods是否能够跳转,跳转到详细页面(评论和细节)
+    shoeGoods(index) {
+      this.onLogin(() => {
+        console.log(index);
+        var index1 = index;
+        if ((this.currentPage == 2) & (this.pageSize == 12)) {
+          index1 = index1 + 12;
+        }
+        if ((this.pageSize == 6) & (this.currentPage == 2)) {
+          index1 = index1 + 6;
+        }
+        if ((this.pageSize == 6) & (this.currentPage == 3)) {
+          index1 = index1 + 12;
+        }
+        if ((this.pageSize == 6) & (this.currentPage == 4)) {
+          index1 = index1 + 18;
+        }
+        var obj = this.shoeList[index1];
+        //把数据存到sessionStorage中
+        sessionStorage.setItem("detail", JSON.stringify(obj));
+
+        //再跳转到详细的商品页面
+        window.open("./detail.html");
+      });
+    },
+
+    //判断书籍区goods是否能够跳转,跳转到详细页面(评论和细节)
+    bookGoods(index) {
+      this.onLogin(() => {
+        console.log(index);
+        var index1 = index;
+        if ((this.currentPage == 2) & (this.pageSize == 12)) {
+          index1 = index1 + 12;
+        }
+        if ((this.pageSize == 6) & (this.currentPage == 2)) {
+          index1 = index1 + 6;
+        }
+        if ((this.pageSize == 6) & (this.currentPage == 3)) {
+          index1 = index1 + 12;
+        }
+        if ((this.pageSize == 6) & (this.currentPage == 4)) {
+          index1 = index1 + 18;
+        }
+        var obj = this.bookList[index1];
+        //把数据存到sessionStorage中
+        sessionStorage.setItem("detail", JSON.stringify(obj));
+
+        //再跳转到详细的商品页面
+        window.open("./detail.html");
+      });
+    },
+
+    //判断乐器区goods是否能够跳转,跳转到详细页面(评论和细节)
+    musicGoods(index) {
+      this.onLogin(() => {
+        console.log(index);
+        var index1 = index;
+        if (this.currentPage == 2) {
+          index1 = index1 + 6;
+        }
+        var obj = this.musicList[index1];
+        //把数据存到sessionStorage中
+        sessionStorage.setItem("detail", JSON.stringify(obj));
+
+        //再跳转到详细的商品页面
+        window.open("./detail.html");
+      });
+    },
+
+    //收藏夹模块
+
+    //关闭收藏夹
+    closeCollect() {
+      this.table = false;
+    },
+
+    //点击收藏夹
+    collect() {
+      this.onLogin(() => {
+        this.table = true;
+        this.getCollect();
+      });
+    },
+
+    //获取收藏夹中的信息;
+    getCollect() {
+      if (localStorage.getItem("token")) {
+        var obj = {
+          username: JSON.parse(localStorage.getItem("token")).username
+        };
+        this.$http
+          .get("http://localhost:4000/getCollect", { params: obj })
+          .then(
+            response => {
+              console.log(response.body);
+              //如果查不到数据,为空数组;
+              if (response.body.length == 0) {
+                this.tableData = [];
+                this.collectNumber = null;
+              } else {
+                //查到,把返回值给tableData;
+                this.tableData = response.body;
+
+                //打收藏夹的数组的个数显示
+                this.collectNumber = this.tableData.length;
+              }
+            },
+            reponse => {
+              console.log("响应失败");
+            }
+          );
+      }
+    },
+
+    //移去收藏夹中的信息
+    remove(name) {
+      console.log(name);
+      //组织当前的信息
+      var obj = {
+        name: name,
+        username: JSON.parse(localStorage.getItem("token")).username
+      };
+      this.$http
+        .get("http://localhost:4000/removeCollect", { params: obj })
+        .then(
+          response => {
+            console.log(response.body);
+            if (response.body.flag == 1) {
+              //获取最新的个人收藏夹
+              this.getCollect();
+
+              //提示移去成功
+              this.$notify({
+                title: "成功",
+                message: "移出成功",
+                type: "success"
+              });
+            }
+          },
+          response => {
+            console.log("响应失败");
+          }
+        );
     }
   }
 };
@@ -736,6 +1666,9 @@ img {
         }
         .el-row {
           margin-top: 7px;
+          a:hover {
+            color: #f50213;
+          }
         }
         .el-divider--vertical {
           width: 1px;
@@ -892,5 +1825,51 @@ img {
     -ms-transform: translate3d(0, 100%, 0);
     -o-transform: translate3d(0, 100%, 0);
   }
+}
+
+/*我的按钮*/
+.demo-drawer__footer .el-button {
+  width: 100%;
+  height: 100%;
+}
+.demo-drawer__footer {
+  margin-top: 40px;
+}
+
+.el-drawer__body p span {
+  color: #f56c6c;
+  margin-left: 5px;
+}
+
+//收藏夹
+.el-drawer__body {
+  .newTitle {
+    overflow: hidden;
+    margin-bottom: 20px;
+    .el-col-12 {
+      padding: 10px;
+    }
+    .el-col-1 {
+      padding: 10px;
+    }
+  }
+  .el-table td,
+  .el-table th {
+    text-align: center !important;
+  }
+  .el-table td {
+    border: 0px;
+  }
+  .el-col-3 {
+    td {
+      padding: 0px;
+    }
+  }
+}
+//收藏后的样式
+.bgc {
+  background: #f56c6c !important;
+  border-color: #f56c6c !important;
+  color: #fff !important;
 }
 </style>

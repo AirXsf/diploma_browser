@@ -19,4 +19,28 @@ router.post('/register', server.register);
 //检查登录
 router.post('/check', server.check);
 
+//修改用户外抽屉的信息值
+router.post('/alterInfo', server.alterInfo);
+
+//查询用户外抽屉的信息值
+router.get('/getInfo', server.getInfo);
+
+//查询用户内抽屉的信息值
+router.get('/getInnerInfo', server.getInnerInfo);
+
+//修改用户内抽屉的信息值
+router.post('/alterInnerInfo', server.alterInnerInfo);
+
+//查询用户个人收藏夹中的信息
+router.get('/getCollect', server.getCollect);
+
+//查询有没有增加到个人收藏夹
+router.get('/getIndexOf', server.getIndexOf);
+
+//增加到个人收藏夹
+router.post('/joinCollect', server.joinCollect);
+
+//移去个人收藏夹中的物品
+router.get('/removeCollect', server.removeCollect);
+
 module.exports = router;
