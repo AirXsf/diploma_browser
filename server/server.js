@@ -181,6 +181,45 @@ module.exports.check = (req, res) => {
   */
 };
 
+//修改密码
+module.exports.resetPassword = (req, res) => {
+  let username = req.body.username;
+  let oldPassword = req.body.oldPassword;
+  let newPassword = req.body.newPassword;
+  let obj = {};
+
+  let sql = 'select * from user where username=? and password=?';
+  let data = [username, oldPassword];
+  connection.connectDB(sql, data, (results) => {
+    //查到此用户
+    if (results[0]) {
+      //继续下层回调(修改密码);
+      let sql = 'update user set password=? where username=?';
+      let data = [newPassword, username];
+      connection.connectDB(sql, data, (results) => {
+        if (results.affectedRows == 1) {
+          //修改成功
+          obj = {
+            flag: '1',
+          };
+        } else {
+          //修改失败
+          obj = {
+            flag: '2',
+          };
+        }
+        res.json(obj);
+      });
+    } else {
+      //密码错误
+      obj = {
+        flag: '0',
+      };
+      res.json(obj);
+    }
+  });
+};
+
 //修改用户外抽屉的信息
 module.exports.alterInfo = (req, res) => {
   //接收参数
@@ -294,17 +333,12 @@ module.exports.alterInnerInfo = (req, res) => {
   });
 };
 
-//查询用户个人收藏夹中的信息
+//查询收藏夹中的信息
 module.exports.getCollect = (req, res) => {
   let username = req.query.username;
   let sql = 'select name,price,img from collection where username=?';
   let data = [username];
   connection.connectDB(sql, data, (results) => {
-    //打印查询的结果
-    console.log(results);
-
-    //打印长度
-    console.log(results.length);
     if (results.length == 0) {
       let obj = [];
       res.json(obj);
@@ -317,7 +351,6 @@ module.exports.getCollect = (req, res) => {
 //查询有没有收藏过
 module.exports.getIndexOf = (req, res) => {
   let obj = req.query;
-  console.log(obj);
   let flag = {};
   let data = [obj.username, obj.name];
   let sql = 'select price from collection where username=? and name=?';
@@ -375,5 +408,194 @@ module.exports.removeCollect = (req, res) => {
       };
       res.json(obj);
     }
+  });
+};
+
+//查询购物车中的信息
+module.exports.getCart = (req, res) => {
+  let username = req.query.username;
+  let sql = 'select name,price,img from cart where username=?';
+  let data = [username];
+  connection.connectDB(sql, data, (results) => {
+    if (results.length == 0) {
+      let obj = [];
+      res.json(obj);
+    } else {
+      res.json(results);
+    }
+  });
+};
+
+//查询有没有加入购物车
+module.exports.getJoinCart = (req, res) => {
+  let obj = req.query;
+  let flag = {};
+  let data = [obj.username, obj.name];
+  let sql = 'select price from cart where username=? and name=?';
+  connection.connectDB(sql, data, (results) => {
+    if (results[0]) {
+      flag = {
+        flag: '1',
+      };
+    } else {
+      flag = {
+        flag: '0',
+      };
+    }
+    res.json(flag);
+  });
+};
+
+//增加商品到购物车中
+module.exports.joinCart = (req, res) => {
+  let obj = req.body;
+  let flag = {};
+  let sql = 'insert cart set ?';
+  connection.connectDB(sql, obj, (results) => {
+    if (results.affectedRows == 1) {
+      flag = {
+        flag: '1',
+      };
+    } else {
+      flag = {
+        flag: '0',
+      };
+    }
+    res.json(flag);
+  });
+};
+
+//移去购物车中的物品
+module.exports.removeCart = (req, res) => {
+  let sql = 'delete from cart where username=? and name=?';
+  let data = [req.query.username, req.query.name];
+  let obj = {};
+  connection.connectDB(sql, data, (results) => {
+    if (results.affectedRows == 1) {
+      let sqlSolve = 'alter table collection auto_increment = 1';
+      connection.connectDB(sqlSolve, null, (results) => {
+        console.log('设置删除后索引正常成功!');
+        obj = {
+          flag: '1',
+        };
+        res.json(obj);
+      });
+    } else {
+      obj = {
+        flag: '0',
+      };
+      res.json(obj);
+    }
+  });
+};
+
+//购物车购买商品
+module.exports.deleteCart = (req, res) => {
+  let username = req.body.username;
+  let list = req.body.list;
+
+  //就一个商品时
+  if (list.length == 1) {
+    let sql = 'delete from cart where username=? and name=?';
+    let data = [username, list[0].name];
+    let obj = {};
+    connection.connectDB(sql, data, (results) => {
+      console.log(results);
+      if (results.affectedRows == 1) {
+        obj = {
+          flag: '1',
+        };
+      } else {
+        obj = {
+          flag: '0',
+        };
+      }
+      res.json(obj);
+    });
+  } else {
+    //多商品时
+    list.forEach((item, index) => {
+      //最后一个商品删除时
+      if (index == list.length - 1) {
+        let sql = 'delete from cart where username=? and name=?';
+        let data = [username, item.name];
+        connection.connectDB(sql, data, (results) => {
+          let obj = {};
+          if (results.affectedRows == 1) {
+            //设置删除索引正常
+            let sqlSolve = 'alter table collection auto_increment = 1';
+            connection.connectDB(sqlSolve, null, (results) => {
+              console.log('设置删除后索引正常成功!');
+              obj = {
+                flag: '1',
+              };
+              res.json(obj);
+            });
+          } else {
+            obj = {
+              flag: '0',
+            };
+            res.json(obj);
+          }
+        });
+      } else {
+        let sql = 'delete from cart where username=? and name=?';
+        let data = [username, item.name];
+        connection.connectDB(sql, data, (results) => {
+          if (results.affectedRows == 1) {
+            console.log('删除成功');
+          } else {
+            console.log('删除失败');
+          }
+        });
+      }
+    });
+
+    /*
+      //第一个item
+      if (index == 0) {
+        sql += item.name;
+      }
+      //最后一个item
+      else if (index == list.length - 1) {
+        sql += ',' + item.name + ')';
+      } else {
+        sql += ',' + item.name;
+      }
+    });
+    data = [username];
+    */
+  }
+};
+
+//查询评论
+module.exports.getComment = (req, res) => {
+  console.log('哈哈');
+  console.log(req.query);
+  let sql = 'select username,date,level,content from comment where name=?';
+  let data = [req.query.name];
+  connection.connectDB(sql, data, (results) => {
+    console.log(results);
+    res.json(results);
+  });
+};
+
+//追加评论
+module.exports.insertComment = (req, res) => {
+  let data = req.body;
+  console.log(data);
+  let sql = 'insert comment set ?';
+  let obj = {};
+  connection.connectDB(sql, data, (results) => {
+    if (results.affectedRows == 1) {
+      obj = {
+        flag: '1',
+      };
+    } else {
+      obj = {
+        flag: '0',
+      };
+    }
+    res.json(obj);
   });
 };

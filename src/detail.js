@@ -1,4 +1,3 @@
-//引入完整的Vue
 // import Vue from '../node_modules/vue/dist/vue.js';
 
 import Vue from 'vue';

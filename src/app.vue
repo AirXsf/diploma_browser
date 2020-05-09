@@ -39,9 +39,11 @@
         </el-badge>
       </el-menu-item>
 
-      <el-menu-item index="5">
-        <i class="el-icon-shopping-cart-full"></i>
-        <span>购物车</span>
+      <el-menu-item index="5" @click="cart">
+        <el-badge :value="cartNumber" type="info">
+          <i class="el-icon-shopping-cart-full"></i>
+          <span>购物车</span>
+        </el-badge>
       </el-menu-item>
 
       <el-menu-item index="6" v-show="flag1" @click="open">
@@ -455,7 +457,10 @@
         </el-col>
       </div>
 
-      <el-table :data="tableData" style="width: 100%">
+      <el-table
+        :data="tableData.filter(data => !search1 || data.name.toLowerCase().includes(search1.toLowerCase()))"
+        style="width: 100%"
+      >
         <el-table-column prop="name" label="商品名" width="120"></el-table-column>
         <el-table-column prop="price" label="价格" width="120"></el-table-column>
 
@@ -466,7 +471,11 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" width="137">
+        <el-table-column width="137">
+          <template slot="header" slot-scope="scope">
+            <el-input v-model="search1" size="mini" placeholder="输入商品名搜索" />
+          </template>
+
           <template slot-scope="scope">
             <el-link type="danger" @click="remove(scope.row.name)">移去</el-link>
           </template>
@@ -474,7 +483,51 @@
       </el-table>
     </el-drawer>
 
-    <!--背景层-->
+    <!--购物车模块-->
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogTableVisible"
+      style="height:500px;"
+      @close="closeCart"
+    >
+      <!--这里的slot插槽可以替换title的值,所以加html样式和图标-->
+      <div slot="title" style="font-size:23px;">
+        <i class="el-icon-shopping-cart-full"></i>
+        <span>购物车</span>
+      </div>
+
+      <el-table :data="gridData" @selection-change="handleSelectionChange">
+        <el-table-column prop="name" label="商品名" width="145"></el-table-column>
+        <el-table-column prop="price" label="价格" width="145"></el-table-column>
+
+        <el-table-column prop="img" width="145" label="图片">
+          <!--插入图片链接的代码-->
+          <template slot-scope="scope">
+            <img :src="scope.row.img" alt style="width: 50px;height: 50px" />
+          </template>
+        </el-table-column>
+
+        <el-table-column type="selection" width="55" align="center"></el-table-column>
+        <el-table-column label="操作" align="center" width="180">
+          <template slot-scope="scope">
+            <el-link type="danger" @click="removeCart(scope.row.name)">移去</el-link>
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <div slot="footer" class="dialog-footer">
+        <el-col :span="24">
+          <el-col :span="4" :offset="16">
+            <span>金额:{{total_price}}</span>
+          </el-col>
+          <el-col :span="2" :offset="1">
+            <el-button type="danger" size="small" plain @click="cartPurchase">立即购买</el-button>
+          </el-col>
+        </el-col>
+      </div>
+    </el-dialog>
+
+    <!--登录注册模块-->
     <div id="popLayer" v-show="flag"></div>
     <transition name="slide">
       <!--弹出层-->
@@ -494,7 +547,6 @@
             <p>
               <router-link to="/register">注册</router-link>
               <router-link to="/login">登录</router-link>
-
               <router-view @success="success(arguments)"></router-view>
             </p>
           </div>
@@ -632,7 +684,23 @@ export default {
       ifCollect: "收藏商品",
 
       //收藏量
-      collectNumber: null
+      collectNumber: null,
+
+      //搜索的关键词,
+      search1: "",
+
+      //购物车数据
+      gridData: [],
+      dialogTableVisible: false,
+
+      //数目
+      cartNumber: null,
+
+      //多选框的值
+      multipleSelection: [],
+
+      //watch时用的数据
+      total_price: "0￥"
     };
   },
 
@@ -664,6 +732,9 @@ export default {
 
     //获取收藏夹中的信息
     this.getCollect();
+
+    //获取购物车里的信息
+    this.getCart();
   },
   mounted() {
     //图片自适应高度
@@ -683,6 +754,26 @@ export default {
         localStorage.clear();
       });
     */
+  },
+  //这里用watch也可实现计算总价格
+  watch: {
+    multipleSelection() {
+      if (this.multipleSelection.length != 0) {
+        var sum = 0;
+        for (var i = 0; i < this.multipleSelection.length; i++) {
+          sum += parseInt(
+            this.multipleSelection[i].price.substring(
+              0,
+              this.multipleSelection[i].price.indexOf("￥")
+            )
+          );
+        }
+        this.total_price = sum + "￥";
+        return;
+      } else {
+        this.total_price = "0￥";
+      }
+    }
   },
   methods: {
     //图片自适应高度
@@ -855,6 +946,10 @@ export default {
 
         //商品名(去空格)
         var name = this.goodsName.replace(/\s*/g, "");
+
+        //去大小写敏感
+        name = name.toLowerCase();
+
         //价格
         var price = this.value;
         //质量
@@ -874,8 +969,8 @@ export default {
         if ((name != "") & (price == "") & (quality == 0)) {
           this.allList.forEach((item, index) => {
             if (
-              item.name.indexOf(name) != -1 ||
-              item.description.indexOf(name) != -1
+              item.name.toLowerCase().indexOf(name) != -1 ||
+              item.description.toLowerCase().indexOf(name) != -1
             ) {
               this.newList.push(item);
             }
@@ -954,8 +1049,8 @@ export default {
                 //去掉￥判断
                 if (
                   (item.price.replace("￥", "") <= 500) &
-                  (item.name.indexOf(name) != -1 ||
-                    item.description.indexOf(name) != -1)
+                  (item.name.toLowerCase().indexOf(name) != -1 ||
+                    item.description.toLowerCase().indexOf(name) != -1)
                 ) {
                   this.newList.push(item);
                 }
@@ -965,8 +1060,8 @@ export default {
                 if (
                   (500 < item.price.replace("￥", "")) &
                   (item.price.replace("￥", "") <= 1000) &
-                  (item.name.indexOf(name) != -1 ||
-                    item.description.indexOf(name) != -1)
+                  (item.name.toLowerCase().indexOf(name) != -1 ||
+                    item.description.toLowerCase().indexOf(name) != -1)
                 ) {
                   this.newList.push(item);
                 }
@@ -977,8 +1072,8 @@ export default {
                 if (
                   (1000 < item.price.replace("￥", "")) &
                   (item.price.replace("￥", "") <= 2000) &
-                  (item.name.indexOf(name) != -1 ||
-                    item.description.indexOf(name) != -1)
+                  (item.name.toLowerCase().indexOf(name) != -1 ||
+                    item.description.toLowerCase().indexOf(name) != -1)
                 ) {
                   this.newList.push(item);
                 }
@@ -990,8 +1085,8 @@ export default {
                 if (
                   (2000 < item.price.replace("￥", "")) &
                   (item.price.replace("￥", "") <= 3000) &
-                  (item.name.indexOf(name) != -1 ||
-                    item.description.indexOf(name) != -1)
+                  (item.name.toLowerCase().indexOf(name) != -1 ||
+                    item.description.toLowerCase().indexOf(name) != -1)
                 ) {
                   this.newList.push(item);
                 }
@@ -1001,8 +1096,8 @@ export default {
                 //去掉￥判断
                 if (
                   (item.price.replace("￥", "") > 3000) &
-                  (item.name.indexOf(name) != -1 ||
-                    item.description.indexOf(name) != -1)
+                  (item.name.toLowerCase().indexOf(name) != -1 ||
+                    item.description.toLowerCase().indexOf(name) != -1)
                 ) {
                   this.newList.push(item);
                 }
@@ -1017,8 +1112,8 @@ export default {
           var quality1 = quality + "成新";
           this.allList.forEach((item, index) => {
             if (
-              (item.name.indexOf(name) != -1 ||
-                item.description.indexOf(name) != -1) &
+              (item.name.toLowerCase().indexOf(name) != -1 ||
+                item.description.toLowerCase().indexOf(name) != -1) &
               (item.description.indexOf(quality1) != -1)
             ) {
               this.newList.push(item);
@@ -1100,8 +1195,8 @@ export default {
                 //去掉￥判断
                 if (
                   (item.price.replace("￥", "") <= 500) &
-                  (item.name.indexOf(name) != -1 ||
-                    item.description.indexOf(name) != -1) &
+                  (item.name.toLowerCase().indexOf(name) != -1 ||
+                    item.description.toLowerCase().indexOf(name) != -1) &
                   (item.description.indexOf(quality1) != -1)
                 ) {
                   this.newList.push(item);
@@ -1112,8 +1207,8 @@ export default {
                 if (
                   (500 < item.price.replace("￥", "")) &
                   (item.price.replace("￥", "") <= 1000) &
-                  (item.name.indexOf(name) != -1 ||
-                    item.description.indexOf(name) != -1) &
+                  (item.name.toLowerCase().indexOf(name) != -1 ||
+                    item.description.toLowerCase().indexOf(name) != -1) &
                   (item.description.indexOf(quality1) != -1)
                 ) {
                   this.newList.push(item);
@@ -1125,8 +1220,8 @@ export default {
                 if (
                   (1000 < item.price.replace("￥", "")) &
                   (item.price.replace("￥", "") <= 2000) &
-                  (item.name.indexOf(name) != -1 ||
-                    item.description.indexOf(name) != -1) &
+                  (item.name.toLowerCase().indexOf(name) != -1 ||
+                    item.description.toLowerCase().indexOf(name) != -1) &
                   (item.description.indexOf(quality1) != -1)
                 ) {
                   this.newList.push(item);
@@ -1138,8 +1233,8 @@ export default {
                 if (
                   (2000 < item.price.replace("￥", "")) &
                   (item.price.replace("￥", "") <= 3000) &
-                  (item.name.indexOf(name) != -1 ||
-                    item.description.indexOf(name) != -1) &
+                  (item.name.toLowerCase().indexOf(name) != -1 ||
+                    item.description.toLowerCase().indexOf(name) != -1) &
                   (item.description.indexOf(quality1) != -1)
                 ) {
                   this.newList.push(item);
@@ -1150,8 +1245,8 @@ export default {
                 //去掉￥判断
                 if (
                   (item.price.replace("￥", "") > 3000) &
-                  (item.name.indexOf(name) != -1 ||
-                    item.description.indexOf(name) != -1) &
+                  (item.name.toLowerCase().indexOf(name) != -1 ||
+                    item.description.toLowerCase().indexOf(name) != -1) &
                   (item.description.indexOf(quality1) != -1)
                 ) {
                   this.newList.push(item);
@@ -1170,6 +1265,11 @@ export default {
         //用sessionStorage(每次发送会覆盖前面的值)
         sessionStorage.setItem("search", newList);
         window.open("./goods.html");
+
+        //打开新的页面后把数据还原
+        this.goodsName = "";
+        this.goodsQuality = 0;
+        this.value = "";
       });
     },
 
@@ -1521,6 +1621,7 @@ export default {
     //关闭收藏夹
     closeCollect() {
       this.table = false;
+      this.search1 = "";
     },
 
     //点击收藏夹
@@ -1590,6 +1691,141 @@ export default {
             console.log("响应失败");
           }
         );
+    },
+
+    //点击购物车
+    cart() {
+      this.onLogin(() => {
+        this.dialogTableVisible = true;
+        this.getCart();
+      });
+    },
+
+    //关闭购物车
+    closeCart() {
+      this.total_price = "0￥";
+    },
+
+    //查询购物车(查询购物车里的物品);
+    getCart() {
+      if (localStorage.getItem("token")) {
+        var obj = {
+          username: JSON.parse(localStorage.getItem("token")).username
+        };
+        this.$http.get("http://localhost:4000/getCart", { params: obj }).then(
+          response => {
+            console.log(response.body);
+            //如果查不到数据,为空数组;
+            if (response.body.length == 0) {
+              this.gridData = [];
+              this.cartNumber = null;
+            } else {
+              //查到,把返回值给tableData;
+              this.gridData = response.body;
+
+              //收藏夹的数组的个数显示
+              this.cartNumber = this.gridData.length;
+            }
+          },
+          reponse => {
+            console.log("响应失败");
+          }
+        );
+      }
+    },
+
+    //移出购物车
+    removeCart(name) {
+      //组织当前的信息
+      var obj = {
+        name: name,
+        username: JSON.parse(localStorage.getItem("token")).username
+      };
+      this.$http.get("http://localhost:4000/removeCart", { params: obj }).then(
+        response => {
+          console.log(response.body);
+          if (response.body.flag == 1) {
+            //获取最新的个人收藏夹
+            this.getCart();
+
+            //提示移去成功
+            this.$notify({
+              title: "成功",
+              message: "移出成功",
+              type: "success"
+            });
+          }
+        },
+        response => {
+          console.log("响应失败");
+        }
+      );
+    },
+
+    //选中多选框时
+    handleSelectionChange: function(val) {
+      this.multipleSelection = val;
+      /*这里也可直接计算总价格,但最好放在computed中完成
+      if (this.multipleSelection.length != 0) {
+        var sum = 0;
+        for (var i = 0; i < this.multipleSelection.length; i++) {
+          sum += parseInt(
+            this.multipleSelection[i].price.substring(
+              0,
+              this.multipleSelection[i].price.indexOf("￥")
+            )
+          );
+        }
+        this.total_price = sum + "￥";
+        return;
+      } else {
+        this.total_price = "0￥";
+      }
+      */
+    },
+
+    //点击购物车立即购买后,(发送Ajax,清空数据库中相应的字段)
+    cartPurchase() {
+      if (this.gridData.length == 0) {
+        this.$notify.error({
+          title: "错误",
+          message: "购物车无商品"
+        });
+        return;
+      } else if (this.multipleSelection.length == 0) {
+        this.$notify.error({
+          title: "错误",
+          message: "请先勾选商品,再购买"
+        });
+      } else {
+        this.$http
+          .post("http://localhost:4000/deleteCart", {
+            //选中的数组;
+            list: this.multipleSelection,
+            //用户名;
+            username: JSON.parse(localStorage.getItem("token")).username
+          })
+          .then(
+            response => {
+              console.log(response.body);
+              if (response.body.flag == 1) {
+                this.$message({
+                  message: "恭喜你，购买成功",
+                  type: "success"
+                });
+                //刷新购物车,
+                this.getCart();
+                //刷新金额
+                this.total_price = "0￥";
+              } else {
+                console.log("删除失败");
+              }
+            },
+            repsonse => {
+              console.log("响应失败");
+            }
+          );
+      }
     }
   }
 };
@@ -1601,6 +1837,7 @@ a {
   text-decoration: none;
   cursor: pointer;
 }
+
 img {
   cursor: pointer;
   width: 100%;
@@ -1763,7 +2000,7 @@ img {
 /*设置弹出层*/
 #popbox {
   background-color: #ffffff;
-  height: 355px;
+  height: 365px;
   position: fixed;
   top: 0;
   right: 0;
@@ -1866,10 +2103,39 @@ img {
     }
   }
 }
+
 //收藏后的样式
 .bgc {
   background: #f56c6c !important;
   border-color: #f56c6c !important;
   color: #fff !important;
+}
+
+//购物车的样式
+.el-dialog {
+  .el-dialog__header {
+    button {
+      i {
+        font-size: 23px;
+      }
+    }
+  }
+  .el-dialog__body {
+    .el-table-column--selection {
+      .cell {
+        padding-left: 0px;
+      }
+    }
+  }
+  .el-dialog__footer {
+    .dialog-footer {
+      overflow: hidden;
+      .el-col-24 {
+        .el-col-4 {
+          margin-top: 5px;
+        }
+      }
+    }
+  }
 }
 </style>

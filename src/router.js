@@ -6,6 +6,8 @@ import login from './components/login.vue';
 
 import register from './components/register.vue';
 
+import forgetPw from './components/forgetPw.vue';
+
 var router = new vueRouter({
   routes: [
     {
@@ -16,7 +18,10 @@ var router = new vueRouter({
       path: '/register',
       component: register,
     },
-    ,
+    {
+      path: '/forgetPw',
+      component: forgetPw,
+    },
   ],
 });
 

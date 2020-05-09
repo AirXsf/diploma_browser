@@ -24,6 +24,9 @@
       show-password
       @keyup.enter.native="login"
     ></el-input>
+    <div class="userData">
+      <span @click="forgetPw">忘记密码?</span>
+    </div>
     <el-button
       ref="btn"
       :class="{ gray: bgGray == 1 }"
@@ -60,6 +63,7 @@ export default {
     };
   },
   methods: {
+    //确认姓名
     affirmName() {
       if (this.userName == "") {
         this.info1 = "用户名不能为空";
@@ -73,6 +77,7 @@ export default {
         return true;
       }
     },
+    //确认密码
     affirmPw() {
       if (this.userPassword == "") {
         this.info2 = "密码不能为空";
@@ -86,6 +91,7 @@ export default {
         return true;
       }
     },
+    //登录
     login() {
       //判断键入为合法的字符时再发送AJax请求
       if ((this.affirmName() == true) & (this.affirmPw() == true)) {
@@ -136,12 +142,20 @@ export default {
                 });
                 //向父组件发射方法,改变值,再发送username过去,再把你好xxxx显示出来
                 this.$emit("success", false, token.username, true);
+
+                //执行父组件的函数
+                //  this.$emit("closeDialog");
+
+                //执行父组件一系列方法
                 this.$parent.close();
 
-                //(让父组件执行getInfo方法获取对应人的对应信息)
                 this.$parent.getInfo();
 
                 this.$parent.getInnerInfo();
+
+                this.$parent.getCollect();
+
+                this.$parent.getCart();
               }
             },
             response => {
@@ -152,6 +166,10 @@ export default {
         this.loginInfo = "登录";
         this.bgGray = 0;
       }
+    },
+    //忘记密码
+    forgetPw() {
+      window.location.href = "/#/forgetPw";
     }
   }
 };
@@ -174,13 +192,17 @@ p {
   margin-top: 7px;
   margin-left: 2px;
 }
+.userData span:hover {
+  border-bottom: 1px solid #f56c6c;
+  cursor: pointer;
+}
 .el-input {
   margin-top: 10px;
   font-size: 16px;
 }
 .el-button {
   color: white;
-  margin-top: 25px;
+  margin-top: 9px;
   width: 100%;
   background: linear-gradient(135deg, #00d9ad, #0092ee) rgba(0, 0, 0, 0.1);
 }
