@@ -787,6 +787,7 @@ export default {
               } else {
                 this.reCollect = true;
                 this.flag10 = 0;
+                this.ifCollect = "未收藏";
                 console.log("可收藏");
               }
             },
