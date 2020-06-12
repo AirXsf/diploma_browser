@@ -141,7 +141,7 @@
         </p>
         <div>
           <el-col :offset="4">
-            <el-button @click="innerDrawer = true">单击前往</el-button>
+            <el-button @click="myAddress">单击前往</el-button>
           </el-col>
           <!--里面的抽屉-->
           <el-drawer
@@ -375,12 +375,6 @@ export default {
     //搜索的结果渲染
     this.goods();
 
-    //获取外抽屉的信息
-    this.outerInfo();
-
-    //获取内抽屉的信息
-    this.innerInfo();
-
     //获取收藏夹中的信息
     this.getCollect();
 
@@ -420,8 +414,15 @@ export default {
     //我的
     myself() {
       this.confirm(() => {
+        this.outerInfo();
         this.dialog = true;
       });
+    },
+
+    //我的地址
+    myAddress() {
+      this.innerInfo();
+      this.innerDrawer = true;
     },
 
     //先接收数据,再渲染商品
@@ -480,6 +481,11 @@ export default {
     //外面抽屉方法(单击提交时)
     handleClose1(done) {
       this.confirm(() => {
+        //去空格
+        this.form.member = this.form.member.replace(/\s*/g, "");
+        this.form.sex = this.form.sex.replace(/\s*/g, "");
+        this.form.age = this.form.age.replace(/\s*/g, "");
+        this.form.college = this.form.college.replace(/\s*/g, "");
         //判断文本框不能为空,为空不能提交
         if (
           (this.form.member == "") |
@@ -521,8 +527,6 @@ export default {
                   });
                   //去掉提示
                   this.flag3 = false;
-                  //提示成功后,查询新的我的值
-                  this.getInfo();
                 }, 400);
               }, 1500);
             }
@@ -538,12 +542,18 @@ export default {
     cancelForm1() {
       this.loading = false;
       this.dialog = false;
+      this.flag3 = false;
       clearTimeout(this.timer);
     },
 
     //里面抽屉的方法
     handleClose2(done) {
       this.confirm(() => {
+        //去空格
+        this.form.name = this.form.name.replace(/\s*/g, "");
+        this.form.number = this.form.number.replace(/\s*/g, "");
+        this.form.postCode = this.form.postCode.replace(/\s*/g, "");
+        this.form.address = this.form.address.replace(/\s*/g, "");
         //判断不能
         if (
           (this.form.name == "") |
@@ -583,8 +593,6 @@ export default {
                   });
                   //去掉提示
                   this.flag4 = false;
-                  //提示成功后,查询新的我的值
-                  this.getInnerInfo();
                 }, 400);
               }, 1500);
             }
@@ -600,6 +608,7 @@ export default {
     cancelForm2() {
       this.loading = false;
       this.innerDrawer = false;
+      this.flag4 = false;
       clearTimeout(this.timer);
     },
 

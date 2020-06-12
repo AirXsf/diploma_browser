@@ -322,7 +322,7 @@
         </p>
         <div>
           <el-col :offset="4">
-            <el-button @click="innerDrawer = true">单击前往</el-button>
+            <el-button @click="myAddress">单击前往</el-button>
           </el-col>
           <!--里面的抽屉-->
           <el-drawer
@@ -634,12 +634,6 @@ export default {
     //获取数据渲染
     this.getDetail();
 
-    //获取外抽屉的信息
-    this.outerInfo();
-
-    //获取内抽屉的信息
-    this.innerInfo();
-
     //查询此商品有没有被收藏
     this.getIndexOf();
 
@@ -716,11 +710,18 @@ export default {
       });
     },
 
-    //我的
+    //单击我的
     myself() {
       this.confirm(() => {
+        this.outerInfo();
         this.dialog = true;
       });
+    },
+
+    //单击我的地址
+    myAddress() {
+      this.innerInfo();
+      this.innerDrawer = true;
     },
 
     //关闭收藏夹
@@ -927,7 +928,11 @@ export default {
     //外面抽屉方法(单击提交时)
     handleClose1(done) {
       this.confirm(() => {
-        //判断文本框不能为空,为空不能提交
+        //去空格
+        this.form.member = this.form.member.replace(/\s*/g, "");
+        this.form.sex = this.form.sex.replace(/\s*/g, "");
+        this.form.age = this.form.age.replace(/\s*/g, "");
+        this.form.college = this.form.college.replace(/\s*/g, "");
         if (
           (this.form.member == "") |
           (this.form.sex == "") |
@@ -968,8 +973,6 @@ export default {
                   });
                   //去掉提示
                   this.flag3 = false;
-                  //提示成功后,查询新的我的值
-                  this.getInfo();
                 }, 400);
               }, 1500);
             }
@@ -985,11 +988,17 @@ export default {
     cancelForm1() {
       this.loading = false;
       this.dialog = false;
+      this.flag3 = false;
       clearTimeout(this.timer);
     },
 
-    //里面抽屉的方法
+    //里面抽屉的方法(单击提交时)
     handleClose2(done) {
+      //去空格
+      this.form.name = this.form.name.replace(/\s*/g, "");
+      this.form.number = this.form.number.replace(/\s*/g, "");
+      this.form.postCode = this.form.postCode.replace(/\s*/g, "");
+      this.form.address = this.form.address.replace(/\s*/g, "");
       this.confirm(() => {
         //判断不能
         if (
@@ -1030,8 +1039,6 @@ export default {
                   });
                   //去掉提示
                   this.flag4 = false;
-                  //提示成功后,查询新的我的值
-                  this.getInnerInfo();
                 }, 400);
               }, 1500);
             }
@@ -1047,6 +1054,7 @@ export default {
     cancelForm2() {
       this.loading = false;
       this.innerDrawer = false;
+      this.flag4 = false;
       clearTimeout(this.timer);
     },
 
@@ -1368,8 +1376,10 @@ export default {
     //增加评论到评论表中
     insertComment() {
       this.confirm(() => {
+        //去空格
+        var textarea = this.textarea.replace(/\s*/g, "");
         //获取当前年月日
-        if ((this.textarea == "") | (this.rateValue == null)) {
+        if ((textarea == "") | (this.rateValue == null)) {
           this.$notify.error({
             title: "错误",
             message: "评论和星级都不能少哦"

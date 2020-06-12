@@ -52,7 +52,7 @@ router.get('/getCart', server.getCart);
 //判断有没有到购物车
 router.get('/getJoinCart', server.getJoinCart);
 
-//增加到个人收藏夹
+//增加到个人购物车
 router.post('/joinCart', server.joinCart);
 
 //移去购物车中的物品
