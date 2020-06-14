@@ -25,7 +25,7 @@
       @keyup.enter.native="login"
     ></el-input>
     <div class="userData">
-      <span @click="forgetPw">忘记密码?</span>
+      <span @click="forgetPw">修改密码?</span>
     </div>
     <el-button
       ref="btn"
