@@ -254,7 +254,7 @@
           <el-table-column prop="username" label="会员名" width="150"></el-table-column>
           <el-table-column prop="level" label="星级" width="180">
             <template slot-scope="scope">
-              <el-rate v-model="scope.row.level" show-text></el-rate>
+              <el-rate v-model="scope.row.level" disabled="true" show-text></el-rate>
             </template>
           </el-table-column>
           <el-table-column prop="content" label="评论内容"></el-table-column>
@@ -1190,7 +1190,7 @@ export default {
               } else {
                 this.reJoin = true;
                 this.flag11 = 0;
-                console.log("未加入购物车");
+                this.ifCart = "未加入购物车";
               }
             },
             reponse => {
@@ -1259,10 +1259,10 @@ export default {
             response => {
               console.log(response.body);
               if (response.body.flag == 1) {
-                //获取最新的个人收藏夹
+                //获取最新的个人购物车
                 this.getCart();
 
-                //更新收藏没
+                //更新加入购物车了没
                 this.getJoinCart();
 
                 //提示移去成功
@@ -1334,6 +1334,10 @@ export default {
                   });
                   //刷新购物车,
                   this.getCart();
+
+                  //刷新有没有加入购物车
+                  this.getJoinCart();
+
                   //刷新金额
                   this.total_price = "0￥";
                 } else {
