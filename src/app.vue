@@ -54,7 +54,7 @@
       <el-submenu index="7" v-show="flag2">
         <template slot="title">
           <i class="el-icon-male"></i>
-          <span>你好,{{username}}</span>
+          <span>你好,{{ username }}</span>
         </template>
         <el-menu-item index="7-1" @click="ruin">
           <span>注销账号</span>
@@ -63,7 +63,7 @@
     </el-menu>
     <!--Element跑马灯的组件-->
     <el-carousel :interval="4000" type="card" :height="bannerH + 'px'">
-      <el-carousel-item v-for="(item,index) in bannerList" :key="item.img">
+      <el-carousel-item v-for="(item, index) in bannerList" :key="item.img">
         <h3 class="medium">
           <img :src="item.img" @click="homeGoods(index)" />
         </h3>
@@ -112,7 +112,7 @@
           <!--内容-->
           <el-row>
             <transition-group>
-              <el-col :span="4" v-for="(item,index) in displayData" :key="item.id">
+              <el-col :span="4" v-for="(item, index) in displayData" :key="item.id">
                 <el-image fit="fill" :src="item.img" @click="aiGoods(index)" />
                 <div class="information">
                   <el-row>
@@ -165,7 +165,7 @@
 
           <el-row>
             <transition-group>
-              <el-col :span="4" v-for="(item,index) in displayData" :key="item.id">
+              <el-col :span="4" v-for="(item, index) in displayData" :key="item.id">
                 <el-image fit="fill" :src="item.img" @click="shoeGoods(index)" />
                 <div class="information">
                   <el-row>
@@ -218,7 +218,7 @@
 
           <el-row>
             <transition-group>
-              <el-col :span="4" v-for="(item,index) in displayData" :key="item.id">
+              <el-col :span="4" v-for="(item, index) in displayData" :key="item.id">
                 <el-image fit="fill" :src="item.img" @click="bookGoods(index)" />
                 <div class="information">
                   <el-row>
@@ -271,7 +271,7 @@
 
           <el-row>
             <transition-group>
-              <el-col :span="4" v-for="(item,index) in displayData" :key="item.id">
+              <el-col :span="4" v-for="(item, index) in displayData" :key="item.id">
                 <el-image fit="fill" :src="item.img" @click="musicGoods(index)" />
                 <div class="information">
                   <el-row>
@@ -458,7 +458,13 @@
       </div>
 
       <el-table
-        :data="tableData.filter(data => !search1 || data.name.toLowerCase().includes(search1.toLowerCase()))"
+        :data="
+          tableData.filter(
+            (data) =>
+              !search1 ||
+              data.name.toLowerCase().includes(search1.toLowerCase())
+          )
+        "
         style="width: 100%"
       >
         <el-table-column prop="name" label="商品名" width="120"></el-table-column>
@@ -518,7 +524,7 @@
       <div slot="footer" class="dialog-footer">
         <el-col :span="24">
           <el-col :span="4" :offset="16">
-            <span>金额:{{total_price}}</span>
+            <span>金额:{{ total_price }}</span>
           </el-col>
           <el-col :span="2" :offset="1">
             <el-button type="danger" size="small" plain @click="cartPurchase">立即购买</el-button>
@@ -589,24 +595,24 @@ export default {
       options: [
         {
           value: "选项1",
-          label: "<500"
+          label: "<500",
         },
         {
           value: "选项2",
-          label: "500~1000"
+          label: "500~1000",
         },
         {
           value: "选项3",
-          label: "1000~2000"
+          label: "1000~2000",
         },
         {
           value: "选项4",
-          label: "2000~3000"
+          label: "2000~3000",
         },
         {
           value: "选项5",
-          label: ">3000"
-        }
+          label: ">3000",
+        },
       ],
 
       //商品名
@@ -663,7 +669,7 @@ export default {
         delivery: false,
         type: [],
         resource: "",
-        desc: ""
+        desc: "",
       },
       formLabelWidth: "80px",
 
@@ -700,7 +706,7 @@ export default {
       multipleSelection: [],
 
       //watch时用的数据
-      total_price: "0￥"
+      total_price: "0￥",
     };
   },
 
@@ -767,7 +773,7 @@ export default {
       } else {
         this.total_price = "0￥";
       }
-    }
+    },
   },
   methods: {
     //图片自适应高度
@@ -778,11 +784,11 @@ export default {
     // 拿数据渲染轮播图
     renderBanner() {
       this.$http.jsonp("http://localhost:4000/getBanner").then(
-        response => {
+        (response) => {
           console.log(response.body);
           this.bannerList = response.body;
         },
-        response => {
+        (response) => {
           console.log("请求失败");
         }
       );
@@ -791,7 +797,7 @@ export default {
     //拿数据渲染主页图
     renderHome() {
       this.$http.jsonp("http://localhost:4000/getHome").then(
-        response => {
+        (response) => {
           console.log(response.body);
           this.allList = response.body;
           response.body.forEach((item, index) => {
@@ -809,7 +815,7 @@ export default {
             }
           });
         },
-        response => {
+        (response) => {
           console.log("请求失败");
         }
       );
@@ -913,7 +919,9 @@ export default {
       //取消滚动条
       this.flag = true;
       document.querySelector("#x").style = "overflow:hidden";
-      window.location.href = "/#/login";
+      // window.location.href = '/#/login';
+      // 使用编程式导航this.$router.push的形式进行路由调转
+      this.$router.push({ name: "login" });
     },
 
     //注册登录的关闭
@@ -954,7 +962,7 @@ export default {
           this.$notify.error({
             title: "提示",
             message: "请输入商品名,价格或几成新",
-            type: "warning"
+            type: "warning",
           });
           return;
         }
@@ -1276,7 +1284,7 @@ export default {
         this.$notify({
           title: "提示",
           message: "你好,请先登录",
-          type: "warning"
+          type: "warning",
         });
         this.open();
       }
@@ -1332,10 +1340,10 @@ export default {
         sex: this.form.sex,
         age: this.form.age,
         college: this.form.college,
-        token: token
+        token: token,
       };
       this.$http.post("http://localhost:4000/alterInfo", obj).then(
-        response => {
+        (response) => {
           console.log(response.body);
           if (response.body.flag == 1) {
             //关闭抽屉,显示更新成功
@@ -1348,7 +1356,7 @@ export default {
                 this.$notify({
                   title: "成功",
                   message: "更新成功",
-                  type: "success"
+                  type: "success",
                 });
                 //去掉提示
                 this.flag3 = false;
@@ -1356,7 +1364,7 @@ export default {
             }, 1500);
           }
         },
-        response => {
+        (response) => {
           console.log("请求失败");
         }
       );
@@ -1397,10 +1405,10 @@ export default {
         number: this.form.number,
         postCode: this.form.postCode,
         address: this.form.address,
-        token: token
+        token: token,
       };
       this.$http.post("http://localhost:4000/alterInnerInfo", obj).then(
-        response => {
+        (response) => {
           console.log(response.body);
           if (response.body.flag == 1) {
             //关闭抽屉,显示更新成功
@@ -1413,7 +1421,7 @@ export default {
                   title: "成功",
                   message: "更新成功",
                   type: "success",
-                  position: "bottom-right"
+                  position: "bottom-right",
                 });
                 //去掉提示
                 this.flag4 = false;
@@ -1421,7 +1429,7 @@ export default {
             }, 1500);
           }
         },
-        response => {
+        (response) => {
           console.log("请求失败");
         }
       );
@@ -1439,10 +1447,10 @@ export default {
     getInfo() {
       if (localStorage.getItem("token")) {
         var obj = {
-          username: this.username
+          username: this.username,
         };
         this.$http.get("http://localhost:4000/getInfo", { params: obj }).then(
-          response => {
+          (response) => {
             var info = response.body;
             console.log(info);
             if (info.flag == 0) {
@@ -1459,7 +1467,7 @@ export default {
               this.form.college = info.college;
             }
           },
-          response => {
+          (response) => {
             console.log("获取失败");
           }
         );
@@ -1470,12 +1478,12 @@ export default {
     getInnerInfo() {
       if (localStorage.getItem("token")) {
         var obj = {
-          username: this.username
+          username: this.username,
         };
         this.$http
           .get("http://localhost:4000/getInnerInfo", { params: obj })
           .then(
-            response => {
+            (response) => {
               var info = response.body;
               console.log(info);
               if (info.flag == 0) {
@@ -1492,7 +1500,7 @@ export default {
                 this.form.address = info.address;
               }
             },
-            response => {
+            (response) => {
               console.log("获取失败");
             }
           );
@@ -1646,12 +1654,12 @@ export default {
     getCollect() {
       if (localStorage.getItem("token")) {
         var obj = {
-          username: JSON.parse(localStorage.getItem("token")).username
+          username: JSON.parse(localStorage.getItem("token")).username,
         };
         this.$http
           .get("http://localhost:4000/getCollect", { params: obj })
           .then(
-            response => {
+            (response) => {
               console.log(response.body);
               //如果查不到数据,为空数组;
               if (response.body.length == 0) {
@@ -1665,7 +1673,7 @@ export default {
                 this.collectNumber = this.tableData.length;
               }
             },
-            reponse => {
+            (reponse) => {
               console.log("响应失败");
             }
           );
@@ -1678,12 +1686,12 @@ export default {
       //组织当前的信息
       var obj = {
         name: name,
-        username: JSON.parse(localStorage.getItem("token")).username
+        username: JSON.parse(localStorage.getItem("token")).username,
       };
       this.$http
         .get("http://localhost:4000/removeCollect", { params: obj })
         .then(
-          response => {
+          (response) => {
             console.log(response.body);
             if (response.body.flag == 1) {
               //获取最新的个人收藏夹
@@ -1693,11 +1701,11 @@ export default {
               this.$notify({
                 title: "成功",
                 message: "移出成功",
-                type: "success"
+                type: "success",
               });
             }
           },
-          response => {
+          (response) => {
             console.log("响应失败");
           }
         );
@@ -1720,10 +1728,10 @@ export default {
     getCart() {
       if (localStorage.getItem("token")) {
         var obj = {
-          username: JSON.parse(localStorage.getItem("token")).username
+          username: JSON.parse(localStorage.getItem("token")).username,
         };
         this.$http.get("http://localhost:4000/getCart", { params: obj }).then(
-          response => {
+          (response) => {
             console.log(response.body);
             //如果查不到数据,为空数组;
             if (response.body.length == 0) {
@@ -1737,7 +1745,7 @@ export default {
               this.cartNumber = this.gridData.length;
             }
           },
-          reponse => {
+          (reponse) => {
             console.log("响应失败");
           }
         );
@@ -1749,10 +1757,10 @@ export default {
       //组织当前的信息
       var obj = {
         name: name,
-        username: JSON.parse(localStorage.getItem("token")).username
+        username: JSON.parse(localStorage.getItem("token")).username,
       };
       this.$http.get("http://localhost:4000/removeCart", { params: obj }).then(
-        response => {
+        (response) => {
           console.log(response.body);
           if (response.body.flag == 1) {
             //获取最新的个人收藏夹
@@ -1762,18 +1770,18 @@ export default {
             this.$notify({
               title: "成功",
               message: "移出成功",
-              type: "success"
+              type: "success",
             });
           }
         },
-        response => {
+        (response) => {
           console.log("响应失败");
         }
       );
     },
 
     //选中多选框时
-    handleSelectionChange: function(val) {
+    handleSelectionChange: function (val) {
       this.multipleSelection = val;
       /*这里也可直接计算总价格,但最好放在computed中完成
       if (this.multipleSelection.length != 0) {
@@ -1799,13 +1807,13 @@ export default {
       if (this.gridData.length == 0) {
         this.$notify.error({
           title: "错误",
-          message: "购物车无商品"
+          message: "购物车无商品",
         });
         return;
       } else if (this.multipleSelection.length == 0) {
         this.$notify.error({
           title: "错误",
-          message: "请先勾选商品,再购买"
+          message: "请先勾选商品,再购买",
         });
       } else {
         this.$http
@@ -1813,15 +1821,15 @@ export default {
             //选中的数组;
             list: this.multipleSelection,
             //用户名;
-            username: JSON.parse(localStorage.getItem("token")).username
+            username: JSON.parse(localStorage.getItem("token")).username,
           })
           .then(
-            response => {
+            (response) => {
               console.log(response.body);
               if (response.body.flag == 1) {
                 this.$message({
                   message: "恭喜你，购买成功",
-                  type: "success"
+                  type: "success",
                 });
                 //刷新购物车,
                 this.getCart();
@@ -1831,13 +1839,13 @@ export default {
                 console.log("删除失败");
               }
             },
-            repsonse => {
+            (repsonse) => {
               console.log("响应失败");
             }
           );
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

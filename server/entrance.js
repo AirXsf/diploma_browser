@@ -7,7 +7,7 @@ let router = require('./router.js');
 let bodyParser = require('body-parser');
 
 //设置允许跨域访问该服务.
-app.all('*', function(req, res, next) {
+app.all('*', function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
   //Access-Control-Allow-Headers ,可根据浏览器的F12查看,把对应的粘贴在这里就行
   res.header('Access-Control-Allow-Headers', 'Content-Type');
@@ -19,7 +19,7 @@ app.all('*', function(req, res, next) {
 //body-parser的设置
 
 //处理post表单提交
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({extended: false}));
 
 //处理json格式的提交
 app.use(bodyParser.json());

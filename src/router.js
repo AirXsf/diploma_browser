@@ -13,6 +13,7 @@ var router = new vueRouter({
     {
       path: '/login',
       component: login,
+      name: 'login',
     },
     {
       path: '/register',
