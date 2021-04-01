@@ -1,5 +1,11 @@
+/*
+ * @Date: 2020-04-02 20:39:04
+ * @LastEditors: wangbiao_isf_ah
+ * @Description: webpack配置文件
+ * @LastEditTime: 2021-04-01 10:26:14
+ */
 //webpack的配置文件
-//创建一个在内存中生成html的插件
+//创建一个在内存中生成html的插件  
 let htmlPlugin = require('./node_modules/html-webpack-plugin');
 let path = require('path');
 module.exports = {

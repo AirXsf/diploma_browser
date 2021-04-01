@@ -1,3 +1,9 @@
+/*
+ * @Date: 2020-04-02 20:39:24
+ * @LastEditors: wangbiao_isf_ah
+ * @Description: 路由配置
+ * @LastEditTime: 2021-04-01 10:26:25
+ */
 import vueRouter from 'vue-router';
 
 import app from './app.vue';
