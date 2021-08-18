@@ -1,12 +1,14 @@
 <template>
   <div>
     <!--页头组件-->
-    <el-menu :default-active="activeIndex"
-             class="el-menu-demo"
-             mode="horizontal"
-             background-color="#545c64"
-             text-color="#fff"
-             active-text-color="#ffd04b">
+    <el-menu
+      :default-active="activeIndex"
+      class="el-menu-demo"
+      mode="horizontal"
+      background-color="#545c64"
+      text-color="#fff"
+      active-text-color="#ffd04b"
+    >
       <el-submenu index="1">
         <template slot="title">关于本站</template>
         <el-menu-item index="1-1">课题:优闲二手交易</el-menu-item>
@@ -20,130 +22,114 @@
         </el-submenu>
       </el-submenu>
 
-      <el-menu-item index="2"
-                    @click="jump">
+      <el-menu-item index="2" @click="jump">
         <i class="el-icon-headset"></i>
         <span>首页</span>
       </el-menu-item>
 
-      <el-menu-item index="3"
-                    @click="drawer">
+      <el-menu-item index="3" @click="drawer">
         <i class="el-icon-s-custom"></i>
         <span>我的</span>
       </el-menu-item>
 
-      <el-menu-item index="4"
-                    @click="collect">
-        <el-badge :value="collectNumber"
-                  type="info">
+      <el-menu-item index="4" @click="collect">
+        <el-badge :value="collectNumber" type="info">
           <i class="el-icon-folder"></i>
           <span>收藏夹</span>
         </el-badge>
       </el-menu-item>
 
-      <el-menu-item index="5"
-                    @click="cart">
-        <el-badge :value="cartNumber"
-                  type="info">
+      <el-menu-item index="5" @click="cart">
+        <el-badge :value="cartNumber" type="info">
           <i class="el-icon-shopping-cart-full"></i>
           <span>购物车</span>
         </el-badge>
       </el-menu-item>
 
-      <el-menu-item index="6"
-                    v-show="flag1"
-                    @click="open">
+      <el-menu-item index="6" v-show="flag1" @click="open">
         <i class="el-icon-sort"></i>
         <span>登录/注册</span>
       </el-menu-item>
 
-      <el-submenu index="7"
-                  v-show="flag2">
+      <el-submenu index="7" v-show="flag2">
         <template slot="title">
           <i class="el-icon-male"></i>
           <span>你好,{{ username }}</span>
         </template>
-        <el-menu-item index="7-1"
-                      @click="ruin">
+        <el-menu-item index="7-1" @click="ruin">
           <span>注销账号</span>
         </el-menu-item>
       </el-submenu>
     </el-menu>
     <!--Element跑马灯的组件-->
-    <el-carousel :interval="4000"
-                 type="card"
-                 :height="bannerH + 'px'">
-      <el-carousel-item v-for="(item, index) in bannerList"
-                        :key="item.img">
+    <el-carousel :interval="4000" type="card" :height="bannerH + 'px'">
+      <el-carousel-item v-for="(item, index) in bannerList" :key="item.img">
         <h3 class="medium">
-          <img :src="item.img"
-               @click="homeGoods(index)" />
+          <img :src="item.img" @click="homeGoods(index)" />
         </h3>
       </el-carousel-item>
     </el-carousel>
 
     <!--自定义搜索框组件 -->
     <el-row>
-      <el-col :span="4"
-              :offset="8"
-              class="father">
-        <el-input v-model="goodsName"
-                  placeholder="请输入商品名"
-                  class="Bcolor"></el-input>
+      <el-col :span="4" :offset="8" class="father">
+        <el-input
+          v-model="goodsName"
+          placeholder="请输入商品名"
+          class="Bcolor"
+        ></el-input>
         <i class="el-icon-search son"></i>
       </el-col>
       <!--价格选项款-->
       <el-col :span="3">
-        <el-select placeholder="请选择价格(可选)"
-                   v-model="value"
-                   class="special">
-          <el-option v-for="item in options"
-                     :key="item.value"
-                     :label="item.label"
-                     :value="item.value"></el-option>
+        <el-select
+          placeholder="请选择价格(可选)"
+          v-model="value"
+          class="special"
+        >
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          ></el-option>
         </el-select>
       </el-col>
       <!--go按钮-->
       <el-col :span="2">
-        <el-button plain
-                   round
-                   class="goButton"
-                   @click="go">Go</el-button>
+        <el-button plain round class="goButton" @click="go">Go</el-button>
       </el-col>
       <!--几成新-->
-      <el-col :span="3"
-              :offset="2">
+      <el-col :span="3" :offset="2">
         <div class="block">
           <span class="demonstration">几成新(可选)---{{ goodsQuality }}</span>
-          <el-slider class="slider"
-                     v-model="goodsQuality"
-                     :step="1"
-                     :max="10"
-                     show-stops></el-slider>
+          <el-slider
+            class="slider"
+            v-model="goodsQuality"
+            :step="1"
+            :max="10"
+            show-stops
+          ></el-slider>
         </div>
       </el-col>
     </el-row>
 
     <!--标签页-->
     <el-row>
-      <el-tabs type="border-card"
-               v-model="activeName"
-               @tab-click="handleClick">
+      <el-tabs type="border-card" v-model="activeName" @tab-click="handleClick">
         <el-tab-pane name="first">
           <!--标签页头-->
-          <span slot="label">
-            <i class="el-icon-monitor"></i> 智能产品区
-          </span>
+          <span slot="label"> <i class="el-icon-monitor"></i> 智能产品区 </span>
 
           <!--内容-->
           <el-row>
             <transition-group>
-              <el-col :span="4"
-                      v-for="(item, index) in displayData"
-                      :key="item.id">
-                <el-image fit="fill"
-                          :src="item.img"
-                          @click="aiGoods(index)" />
+              <el-col
+                :span="4"
+                v-for="(item, index) in displayData"
+                :key="item.id"
+              >
+                <el-image fit="fill" :src="item.img" @click="aiGoods(index)" />
                 <div class="information">
                   <el-row>
                     <el-col :span="24">
@@ -175,30 +161,34 @@
 
           <el-row>
             <div class="block">
-              <el-pagination @size-change="handleSizeChange"
-                             @current-change="handleCurrentChange"
-                             :current-page.sync="currentPage"
-                             :page-sizes="[12, 6]"
-                             layout="total, sizes, prev, pager, next, jumper"
-                             :total="24"
-                             background></el-pagination>
+              <el-pagination
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page.sync="currentPage"
+                :page-sizes="[12, 6]"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="24"
+                background
+              ></el-pagination>
             </div>
           </el-row>
         </el-tab-pane>
 
         <el-tab-pane name="second">
-          <span slot="label">
-            <i class="el-icon-goods"></i> 潮流服鞋区
-          </span>
+          <span slot="label"> <i class="el-icon-goods"></i> 潮流服鞋区 </span>
 
           <el-row>
             <transition-group>
-              <el-col :span="4"
-                      v-for="(item, index) in displayData"
-                      :key="item.id">
-                <el-image fit="fill"
-                          :src="item.img"
-                          @click="shoeGoods(index)" />
+              <el-col
+                :span="4"
+                v-for="(item, index) in displayData"
+                :key="item.id"
+              >
+                <el-image
+                  fit="fill"
+                  :src="item.img"
+                  @click="shoeGoods(index)"
+                />
                 <div class="information">
                   <el-row>
                     <el-col :span="24">
@@ -230,30 +220,34 @@
 
           <el-row>
             <div class="block">
-              <el-pagination @size-change="handleSizeChange"
-                             @current-change="handleCurrentChange"
-                             :current-page.sync="currentPage"
-                             :page-sizes="[12, 6]"
-                             layout="total, sizes, prev, pager, next, jumper"
-                             :total="24"
-                             background></el-pagination>
+              <el-pagination
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page.sync="currentPage"
+                :page-sizes="[12, 6]"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="24"
+                background
+              ></el-pagination>
             </div>
           </el-row>
         </el-tab-pane>
 
         <el-tab-pane name="third">
-          <span slot="label">
-            <i class="el-icon-reading"></i> 图书影音区
-          </span>
+          <span slot="label"> <i class="el-icon-reading"></i> 图书影音区 </span>
 
           <el-row>
             <transition-group>
-              <el-col :span="4"
-                      v-for="(item, index) in displayData"
-                      :key="item.id">
-                <el-image fit="fill"
-                          :src="item.img"
-                          @click="bookGoods(index)" />
+              <el-col
+                :span="4"
+                v-for="(item, index) in displayData"
+                :key="item.id"
+              >
+                <el-image
+                  fit="fill"
+                  :src="item.img"
+                  @click="bookGoods(index)"
+                />
                 <div class="information">
                   <el-row>
                     <el-col :span="24">
@@ -285,30 +279,34 @@
 
           <el-row>
             <div class="block">
-              <el-pagination @size-change="handleSizeChange"
-                             @current-change="handleCurrentChange"
-                             :current-page.sync="currentPage"
-                             :page-sizes="[12, 6]"
-                             layout="total, sizes, prev, pager, next, jumper"
-                             :total="24"
-                             background></el-pagination>
+              <el-pagination
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page.sync="currentPage"
+                :page-sizes="[12, 6]"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="24"
+                background
+              ></el-pagination>
             </div>
           </el-row>
         </el-tab-pane>
 
         <el-tab-pane name="fourth">
-          <span slot="label">
-            <i class="el-icon-box"></i> 综合乐器区
-          </span>
+          <span slot="label"> <i class="el-icon-box"></i> 综合乐器区 </span>
 
           <el-row>
             <transition-group>
-              <el-col :span="4"
-                      v-for="(item, index) in displayData"
-                      :key="item.id">
-                <el-image fit="fill"
-                          :src="item.img"
-                          @click="musicGoods(index)" />
+              <el-col
+                :span="4"
+                v-for="(item, index) in displayData"
+                :key="item.id"
+              >
+                <el-image
+                  fit="fill"
+                  :src="item.img"
+                  @click="musicGoods(index)"
+                />
                 <div class="information">
                   <el-row>
                     <el-col :span="24">
@@ -340,13 +338,15 @@
 
           <el-row>
             <div class="block">
-              <el-pagination @size-change="handleSizeChange"
-                             @current-change="handleCurrentChange"
-                             :current-page.sync="currentPage"
-                             :page-sizes="[6]"
-                             layout="total, sizes, prev, pager, next, jumper"
-                             :total="12"
-                             background></el-pagination>
+              <el-pagination
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page.sync="currentPage"
+                :page-sizes="[6]"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="12"
+                background
+              ></el-pagination>
             </div>
           </el-row>
         </el-tab-pane>
@@ -354,13 +354,15 @@
     </el-row>
 
     <!--我的模块 -->
-    <el-drawer title="我的信息(此处不显示,因为设置了:with-header)!"
-               :before-close="handleClose1"
-               :visible.sync="dialog"
-               custom-class="demo-drawer"
-               ref="drawer"
-               :with-header="false"
-               size="32%">
+    <el-drawer
+      title="我的信息(此处不显示,因为设置了:with-header)!"
+      :before-close="handleClose1"
+      :visible.sync="dialog"
+      custom-class="demo-drawer"
+      ref="drawer"
+      :with-header="false"
+      size="32%"
+    >
       <div class="demo-drawer__content">
         <!--外面的抽屉-->
         <p>
@@ -369,49 +371,49 @@
           <span v-show="flag3">每个信息都不能为空哦</span>
         </p>
         <el-form :model="form">
-          <el-form-item label="会员名"
-                        :label-width="formLabelWidth">
-            <el-input placeholder="请输入会员名"
-                      v-model="form.member"
-                      autocomplete="off"></el-input>
+          <el-form-item label="会员名" :label-width="formLabelWidth">
+            <el-input
+              placeholder="请输入会员名"
+              v-model="form.member"
+              autocomplete="off"
+            ></el-input>
           </el-form-item>
 
-          <el-form-item label="性别"
-                        :label-width="formLabelWidth">
-            <el-select v-model="form.sex"
-                       placeholder="请选择">
-              <el-option label="男"
-                         value="男"></el-option>
-              <el-option label="女"
-                         value="女"></el-option>
+          <el-form-item label="性别" :label-width="formLabelWidth">
+            <el-select v-model="form.sex" placeholder="请选择">
+              <el-option label="男" value="男"></el-option>
+              <el-option label="女" value="女"></el-option>
             </el-select>
           </el-form-item>
 
-          <el-form-item label="年龄"
-                        :label-width="formLabelWidth">
-            <el-input placeholder="年龄"
-                      v-model="form.age"
-                      autocomplete="off"></el-input>
+          <el-form-item label="年龄" :label-width="formLabelWidth">
+            <el-input
+              placeholder="年龄"
+              v-model="form.age"
+              autocomplete="off"
+            ></el-input>
           </el-form-item>
 
-          <el-form-item label="毕业院校"
-                        :label-width="formLabelWidth">
-            <el-input placeholder="请输入毕业院校"
-                      v-model="form.college"
-                      autocomplete="off"
-                      @keyup.enter.native="$refs.drawer.closeDrawer()"></el-input>
+          <el-form-item label="毕业院校" :label-width="formLabelWidth">
+            <el-input
+              placeholder="请输入毕业院校"
+              v-model="form.college"
+              autocomplete="off"
+              @keyup.enter.native="$refs.drawer.closeDrawer()"
+            ></el-input>
           </el-form-item>
         </el-form>
         <div class="demo-drawer__footer el-row">
-          <el-col :span="6"
-                  :offset="4">
+          <el-col :span="6" :offset="4">
             <el-button @click="cancelForm1">取 消</el-button>
           </el-col>
-          <el-col :span="6"
-                  :offset="3">
-            <el-button type="primary"
-                       @click="$refs.drawer.closeDrawer()"
-                       :loading="loading">{{ loading ? '提交中 ...' : '提交' }}</el-button>
+          <el-col :span="6" :offset="3">
+            <el-button
+              type="primary"
+              @click="$refs.drawer.closeDrawer()"
+              :loading="loading"
+              >{{ loading ? "提交中 ..." : "提交" }}</el-button
+            >
           </el-col>
         </div>
         <p>
@@ -423,59 +425,66 @@
             <el-button @click="myAddress">单击前往</el-button>
           </el-col>
           <!--里面的抽屉-->
-          <el-drawer title="我是里面的"
-                     :append-to-body="true"
-                     :visible.sync="innerDrawer"
-                     size="26%"
-                     :with-header="false">
+          <el-drawer
+            title="我是里面的"
+            :append-to-body="true"
+            :visible.sync="innerDrawer"
+            size="26%"
+            :with-header="false"
+          >
             <p>
               <i class="el-icon-truck"></i>
               我的地址:
               <span v-show="flag4">每个信息都不能为空哦</span>
             </p>
             <el-form :model="form">
-              <el-form-item label="姓名"
-                            :label-width="formLabelWidth">
-                <el-input v-model="form.name"
-                          placeholder="请输入姓名"
-                          autocomplete="off"></el-input>
+              <el-form-item label="姓名" :label-width="formLabelWidth">
+                <el-input
+                  v-model="form.name"
+                  placeholder="请输入姓名"
+                  autocomplete="off"
+                ></el-input>
               </el-form-item>
 
-              <el-form-item label="电话"
-                            :label-width="formLabelWidth">
-                <el-input v-model="form.number"
-                          placeholder="请输入11位电话号码"
-                          autocomplete="off"></el-input>
+              <el-form-item label="电话" :label-width="formLabelWidth">
+                <el-input
+                  v-model="form.number"
+                  placeholder="请输入11位电话号码"
+                  autocomplete="off"
+                ></el-input>
               </el-form-item>
 
-              <el-form-item label="邮政编码"
-                            :label-width="formLabelWidth">
-                <el-input v-model="form.postCode"
-                          placeholder="请输入所在6位地区邮政编码"
-                          autocomplete="off"></el-input>
+              <el-form-item label="邮政编码" :label-width="formLabelWidth">
+                <el-input
+                  v-model="form.postCode"
+                  placeholder="请输入所在6位地区邮政编码"
+                  autocomplete="off"
+                ></el-input>
               </el-form-item>
 
-              <el-form-item label="地址"
-                            :label-width="formLabelWidth">
-                <el-input type="textarea"
-                          :rows="2"
-                          placeholder="请输入具体地址"
-                          v-model="form.address"
-                          autocomplete="off"
-                          @keyup.enter.native="handleClose2"></el-input>
+              <el-form-item label="地址" :label-width="formLabelWidth">
+                <el-input
+                  type="textarea"
+                  :rows="2"
+                  placeholder="请输入具体地址"
+                  v-model="form.address"
+                  autocomplete="off"
+                  @keyup.enter.native="handleClose2"
+                ></el-input>
               </el-form-item>
             </el-form>
 
             <div class="demo-drawer__footer el-row">
-              <el-col :span="6"
-                      :offset="4">
+              <el-col :span="6" :offset="4">
                 <el-button @click="cancelForm2">取 消</el-button>
               </el-col>
-              <el-col :span="6"
-                      :offset="3">
-                <el-button type="primary"
-                           @click="handleClose2"
-                           :loading="loading">{{ loading ? '提交中 ...' : '提交' }}</el-button>
+              <el-col :span="6" :offset="3">
+                <el-button
+                  type="primary"
+                  @click="handleClose2"
+                  :loading="loading"
+                  >{{ loading ? "提交中 ..." : "提交" }}</el-button
+                >
               </el-col>
             </div>
           </el-drawer>
@@ -484,149 +493,150 @@
     </el-drawer>
 
     <!--收藏夹模块 -->
-    <el-drawer title="收藏夹!"
-               :visible.sync="table"
-               size="35%"
-               label="ltr"
-               :with-header="false"
-               direction="rtl">
+    <el-drawer
+      title="收藏夹!"
+      :visible.sync="table"
+      size="35%"
+      label="ltr"
+      :with-header="false"
+      direction="rtl"
+    >
       <div class="newTitle">
         <el-col :span="12">
           <i class="el-icon-folder"></i>
           <span>收藏夹</span>
         </el-col>
-        <el-col :span="1"
-                :offset="9">
-          <button type="button"
-                  @click="closeCollect"
-                  class="el-drawer__close-btn">
+        <el-col :span="1" :offset="9">
+          <button
+            type="button"
+            @click="closeCollect"
+            class="el-drawer__close-btn"
+          >
             <i class="el-dialog__close el-icon el-icon-close"></i>
           </button>
         </el-col>
       </div>
 
-      <el-table :data="
+      <el-table
+        :data="
           tableData.filter(
             (data) =>
               !search1 ||
               data.name.toLowerCase().includes(search1.toLowerCase())
           )
         "
-                style="width: 100%">
-        <el-table-column prop="name"
-                         label="商品名"
-                         width="120"></el-table-column>
-        <el-table-column prop="price"
-                         label="价格"
-                         width="120"></el-table-column>
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="name"
+          label="商品名"
+          width="120"
+        ></el-table-column>
+        <el-table-column
+          prop="price"
+          label="价格"
+          width="120"
+        ></el-table-column>
 
-        <el-table-column prop="img"
-                         width="120"
-                         label="图片">
+        <el-table-column prop="img" width="120" label="图片">
           <!--插入图片链接的代码-->
           <template slot-scope="scope">
-            <img :src="scope.row.img"
-                 alt
-                 style="width: 50px;height: 50px" />
+            <img :src="scope.row.img" alt style="width: 50px;height: 50px" />
           </template>
         </el-table-column>
 
         <el-table-column width="137">
-          <template slot="header"
-                    slot-scope="scope">
-            <el-input v-model="search1"
-                      size="mini"
-                      placeholder="输入商品名搜索" />
+          <template slot="header">
+            <el-input
+              v-model="search1"
+              size="mini"
+              placeholder="输入商品名搜索"
+            />
           </template>
 
           <template slot-scope="scope">
-            <el-link type="danger"
-                     @click="remove(scope.row.name)">移去</el-link>
+            <el-link type="danger" @click="remove(scope.row.name)"
+              >移去</el-link
+            >
           </template>
         </el-table-column>
       </el-table>
     </el-drawer>
 
     <!--购物车模块-->
-    <el-dialog title="提示"
-               :visible.sync="dialogTableVisible"
-               style="height:500px;"
-               @close="closeCart">
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogTableVisible"
+      style="height:500px;"
+      @close="closeCart"
+    >
       <!--这里的slot插槽可以替换title的值,所以加html样式和图标-->
-      <div slot="title"
-           style="font-size:23px;">
+      <div slot="title" style="font-size:23px;">
         <i class="el-icon-shopping-cart-full"></i>
         <span>购物车</span>
       </div>
 
-      <el-table :data="gridData"
-                @selection-change="handleSelectionChange">
-        <el-table-column prop="name"
-                         label="商品名"
-                         width="145"></el-table-column>
-        <el-table-column prop="price"
-                         label="价格"
-                         width="145"></el-table-column>
+      <el-table :data="gridData" @selection-change="handleSelectionChange">
+        <el-table-column
+          prop="name"
+          label="商品名"
+          width="145"
+        ></el-table-column>
+        <el-table-column
+          prop="price"
+          label="价格"
+          width="145"
+        ></el-table-column>
 
-        <el-table-column prop="img"
-                         width="145"
-                         label="图片">
+        <el-table-column prop="img" width="145" label="图片">
           <!--插入图片链接的代码-->
           <template slot-scope="scope">
-            <img :src="scope.row.img"
-                 alt
-                 style="width: 50px;height: 50px" />
+            <img :src="scope.row.img" alt style="width: 50px;height: 50px" />
           </template>
         </el-table-column>
 
-        <el-table-column type="selection"
-                         width="55"
-                         align="center"></el-table-column>
-        <el-table-column label="操作"
-                         align="center"
-                         width="180">
+        <el-table-column
+          type="selection"
+          width="55"
+          align="center"
+        ></el-table-column>
+        <el-table-column label="操作" align="center" width="180">
           <template slot-scope="scope">
-            <el-link type="danger"
-                     @click="removeCart(scope.row.name)">移去</el-link>
+            <el-link type="danger" @click="removeCart(scope.row.name)"
+              >移去</el-link
+            >
           </template>
         </el-table-column>
       </el-table>
 
-      <div slot="footer"
-           class="dialog-footer">
+      <div slot="footer" class="dialog-footer">
         <el-col :span="24">
-          <el-col :span="4"
-                  :offset="16">
+          <el-col :span="4" :offset="16">
             <span>金额:{{ total_price }}</span>
           </el-col>
-          <el-col :span="2"
-                  :offset="1">
-            <el-button type="danger"
-                       size="small"
-                       plain
-                       @click="cartPurchase">立即购买</el-button>
+          <el-col :span="2" :offset="1">
+            <el-button type="danger" size="small" plain @click="cartPurchase"
+              >立即购买</el-button
+            >
           </el-col>
         </el-col>
       </div>
     </el-dialog>
 
     <!--登录注册模块-->
-    <div id="popLayer"
-         v-show="flag"></div>
+    <div id="popLayer" v-show="flag"></div>
     <transition name="slide">
       <!--弹出层-->
-      <div class="el-message-box"
-           id="popbox"
-           v-show="flag">
+      <div class="el-message-box" id="popbox" v-show="flag">
         <div class="el-message-box__header">
           <div class="el-message-box__title">
-            <span>
-              <i class="el-icon-headset"></i>优闲
-            </span>
+            <span> <i class="el-icon-headset"></i>优闲 </span>
           </div>
-          <button type="button"
-                  class="el-message-box__headerbtn"
-                  @click="close">
+          <button
+            type="button"
+            class="el-message-box__headerbtn"
+            @click="close"
+          >
             <i class="el-message-box__close el-icon-close"></i>
           </button>
         </div>
@@ -643,10 +653,10 @@
     </transition>
   </div>
 </template>
-  
+
 <script>
 export default {
-  data () {
+  data() {
     return {
       //用户名
       username: "",
@@ -793,7 +803,7 @@ export default {
   },
 
   //created中的函数会在加载时执行
-  created () {
+  created() {
     //加载页面
 
     //判断有没有登录,登陆后刷新还存在此状态
@@ -818,7 +828,7 @@ export default {
     //获取购物车里的信息
     this.getCart();
   },
-  mounted () {
+  mounted() {
     //图片自适应高度
     this.setBannerH();
 
@@ -839,7 +849,7 @@ export default {
   },
   //这里用watch也可实现计算总价格
   watch: {
-    multipleSelection () {
+    multipleSelection() {
       if (this.multipleSelection.length != 0) {
         var sum = 0;
         for (var i = 0; i < this.multipleSelection.length; i++) {
@@ -859,12 +869,12 @@ export default {
   },
   methods: {
     //图片自适应高度
-    setBannerH () {
+    setBannerH() {
       this.bannerH = document.body.clientWidth / 4;
     },
 
     // 拿数据渲染轮播图
-    renderBanner () {
+    renderBanner() {
       this.$http.jsonp("http://localhost:4000/getBanner").then(
         (response) => {
           console.log(response.body);
@@ -877,7 +887,7 @@ export default {
     },
 
     //拿数据渲染主页图
-    renderHome () {
+    renderHome() {
       this.$http.jsonp("http://localhost:4000/getHome").then(
         (response) => {
           console.log(response.body);
@@ -904,7 +914,7 @@ export default {
     },
 
     //计算当前页面的数据
-    homeSize (whichList) {
+    homeSize(whichList) {
       this.displayData = [];
       for (
         var j = this.pageSize * (this.currentPage - 1);
@@ -920,7 +930,7 @@ export default {
     },
 
     //改变现在的页数时触发(判断是哪个标签页)
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       if (this.activeName == "first") {
         this.homeSize(this.aiList);
       }
@@ -936,7 +946,7 @@ export default {
     },
 
     //改变页面条数时触发(判断是哪个标签页)
-    handleSizeChange (val) {
+    handleSizeChange(val) {
       this.pageSize = `${val}`;
       this.currentPage = 1;
       if (this.activeName == "first") {
@@ -954,7 +964,7 @@ export default {
     },
 
     //标签页单击的触发函数
-    handleClick (tab, event) {
+    handleClick(tab, event) {
       if (this.activeName == "first") {
         //换标签时换回原位
         this.currentPage = 1;
@@ -992,29 +1002,29 @@ export default {
     },
 
     //跳转主页
-    jump () {
+    jump() {
       window.location.href = "/";
     },
 
     //注册登录的显示
-    open () {
+    open() {
       //取消滚动条
       this.flag = true;
       document.querySelector("#x").style = "overflow:hidden";
       // window.location.href = '/#/login';
       // 使用编程式导航this.$router.push的形式进行路由调转
-      this.$router.push({name: "login"});
+      this.$router.push({ name: "login" });
     },
 
     //注册登录的关闭
-    close () {
+    close() {
       this.flag = false;
       window.location.href = "/#/";
       document.querySelector("#x").style = "overflow:visible";
     },
 
     //子通过此方法修改父的值(多参数这么修改)
-    success (msg) {
+    success(msg) {
       this.flag1 = msg[0];
       //传入token的name
       this.username = msg[1];
@@ -1022,7 +1032,7 @@ export default {
     },
 
     //搜索按钮单击
-    go () {
+    go() {
       //取localstorage中的token,判断有没有登录状态,有才能搜索,没有直接跳到登录状态
       this.onLogin(() => {
         //每次重新go的时候,清空
@@ -1358,7 +1368,7 @@ export default {
     },
 
     //封装判断登录状态的方法
-    onLogin (func) {
+    onLogin(func) {
       //如果存在localStorage中的token
       if (localStorage.getItem("token")) {
         func();
@@ -1373,7 +1383,7 @@ export default {
     },
 
     //注销账号
-    ruin () {
+    ruin() {
       //清空token
       window.localStorage.clear();
       //刷新页面
@@ -1381,7 +1391,7 @@ export default {
     },
 
     //我的
-    drawer () {
+    drawer() {
       this.onLogin(() => {
         this.getInfo();
         this.dialog = true;
@@ -1389,13 +1399,13 @@ export default {
     },
 
     //我的地址
-    myAddress () {
+    myAddress() {
       this.getInnerInfo();
       this.innerDrawer = true;
     },
 
     //外面抽屉方法(单击提交时)
-    handleClose1 (done) {
+    handleClose1(done) {
       //去空格
       this.form.member = this.form.member.replace(/\s*/g, "");
       this.form.sex = this.form.sex.replace(/\s*/g, "");
@@ -1453,7 +1463,7 @@ export default {
     },
 
     //取消外面抽屉
-    cancelForm1 () {
+    cancelForm1() {
       this.loading = false;
       this.dialog = false;
       this.flag3 = false;
@@ -1461,7 +1471,7 @@ export default {
     },
 
     //里面抽屉的方法
-    handleClose2 (done) {
+    handleClose2(done) {
       //去空格
       this.form.name = this.form.name.replace(/\s*/g, "");
       this.form.number = this.form.number.replace(/\s*/g, "");
@@ -1518,7 +1528,7 @@ export default {
     },
 
     //取消里面的抽屉
-    cancelForm2 () {
+    cancelForm2() {
       this.loading = false;
       this.innerDrawer = false;
       this.flag4 = false;
@@ -1526,12 +1536,12 @@ export default {
     },
 
     //拿数据渲染外抽屉
-    getInfo () {
+    getInfo() {
       if (localStorage.getItem("token")) {
         var obj = {
           username: this.username,
         };
-        this.$http.get("http://localhost:4000/getInfo", {params: obj}).then(
+        this.$http.get("http://localhost:4000/getInfo", { params: obj }).then(
           (response) => {
             var info = response.body;
             console.log(info);
@@ -1557,13 +1567,13 @@ export default {
     },
 
     //拿数据渲染内抽屉
-    getInnerInfo () {
+    getInnerInfo() {
       if (localStorage.getItem("token")) {
         var obj = {
           username: this.username,
         };
         this.$http
-          .get("http://localhost:4000/getInnerInfo", {params: obj})
+          .get("http://localhost:4000/getInnerInfo", { params: obj })
           .then(
             (response) => {
               var info = response.body;
@@ -1590,7 +1600,7 @@ export default {
     },
 
     //判断跑马灯是否能够跳转,跳转到详细页面(评论和细节)
-    homeGoods (index) {
+    homeGoods(index) {
       this.onLogin(() => {
         console.log(index);
         //组织好点击的数据存到sessionStorage中发送给详细页面
@@ -1622,7 +1632,7 @@ export default {
     },
 
     //判断电子产品区goods是否能够跳转,跳转到详细页面(评论和细节)
-    aiGoods (index) {
+    aiGoods(index) {
       this.onLogin(() => {
         var index1 = index;
 
@@ -1648,7 +1658,7 @@ export default {
     },
 
     //判断鞋子区goods是否能够跳转,跳转到详细页面(评论和细节)
-    shoeGoods (index) {
+    shoeGoods(index) {
       this.onLogin(() => {
         console.log(index);
         var index1 = index;
@@ -1674,7 +1684,7 @@ export default {
     },
 
     //判断书籍区goods是否能够跳转,跳转到详细页面(评论和细节)
-    bookGoods (index) {
+    bookGoods(index) {
       this.onLogin(() => {
         console.log(index);
         var index1 = index;
@@ -1700,7 +1710,7 @@ export default {
     },
 
     //判断乐器区goods是否能够跳转,跳转到详细页面(评论和细节)
-    musicGoods (index) {
+    musicGoods(index) {
       this.onLogin(() => {
         console.log(index);
         var index1 = index;
@@ -1719,13 +1729,13 @@ export default {
     //收藏夹模块
 
     //关闭收藏夹
-    closeCollect () {
+    closeCollect() {
       this.table = false;
       this.search1 = "";
     },
 
     //点击收藏夹
-    collect () {
+    collect() {
       this.onLogin(() => {
         this.table = true;
         this.getCollect();
@@ -1733,13 +1743,13 @@ export default {
     },
 
     //获取收藏夹中的信息;
-    getCollect () {
+    getCollect() {
       if (localStorage.getItem("token")) {
         var obj = {
           username: JSON.parse(localStorage.getItem("token")).username,
         };
         this.$http
-          .get("http://localhost:4000/getCollect", {params: obj})
+          .get("http://localhost:4000/getCollect", { params: obj })
           .then(
             (response) => {
               console.log(response.body);
@@ -1763,7 +1773,7 @@ export default {
     },
 
     //移去收藏夹中的信息
-    remove (name) {
+    remove(name) {
       console.log(name);
       //组织当前的信息
       var obj = {
@@ -1771,7 +1781,7 @@ export default {
         username: JSON.parse(localStorage.getItem("token")).username,
       };
       this.$http
-        .get("http://localhost:4000/removeCollect", {params: obj})
+        .get("http://localhost:4000/removeCollect", { params: obj })
         .then(
           (response) => {
             console.log(response.body);
@@ -1794,7 +1804,7 @@ export default {
     },
 
     //点击购物车
-    cart () {
+    cart() {
       this.onLogin(() => {
         this.dialogTableVisible = true;
         this.getCart();
@@ -1802,17 +1812,17 @@ export default {
     },
 
     //关闭购物车
-    closeCart () {
+    closeCart() {
       this.total_price = "0￥";
     },
 
     //查询购物车(查询购物车里的物品);
-    getCart () {
+    getCart() {
       if (localStorage.getItem("token")) {
         var obj = {
           username: JSON.parse(localStorage.getItem("token")).username,
         };
-        this.$http.get("http://localhost:4000/getCart", {params: obj}).then(
+        this.$http.get("http://localhost:4000/getCart", { params: obj }).then(
           (response) => {
             console.log(response.body);
             //如果查不到数据,为空数组;
@@ -1835,13 +1845,13 @@ export default {
     },
 
     //移出购物车
-    removeCart (name) {
+    removeCart(name) {
       //组织当前的信息
       var obj = {
         name: name,
         username: JSON.parse(localStorage.getItem("token")).username,
       };
-      this.$http.get("http://localhost:4000/removeCart", {params: obj}).then(
+      this.$http.get("http://localhost:4000/removeCart", { params: obj }).then(
         (response) => {
           console.log(response.body);
           if (response.body.flag == 1) {
@@ -1863,7 +1873,7 @@ export default {
     },
 
     //选中多选框时
-    handleSelectionChange: function (val) {
+    handleSelectionChange: function(val) {
       this.multipleSelection = val;
       /*这里也可直接计算总价格,但最好放在computed中完成
       if (this.multipleSelection.length != 0) {
@@ -1885,7 +1895,7 @@ export default {
     },
 
     //点击购物车立即购买后,(发送Ajax,清空数据库中相应的字段)
-    cartPurchase () {
+    cartPurchase() {
       if (this.gridData.length == 0) {
         this.$notify.error({
           title: "错误",

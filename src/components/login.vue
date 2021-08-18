@@ -32,7 +32,8 @@
       :class="{ gray: bgGray == 1 }"
       :disabled="disInfo"
       @click="login"
-    >{{ loginInfo }}</el-button>
+      >{{ loginInfo }}</el-button
+    >
   </div>
 </template>
 <script>
@@ -59,7 +60,7 @@ export default {
       //控制注册后设置的按钮信息
       disInfo: false,
       bgGray: 0,
-      loginInfo: "登录"
+      loginInfo: "登录",
     };
   },
   methods: {
@@ -102,12 +103,12 @@ export default {
         //再发送AJax请求(判断是否密码和账号对不对)
         var obj = {
           username: this.userName,
-          password: this.userPassword
+          password: this.userPassword,
         };
         this.$http
           .post("http://localhost:4000/check", obj, { emulateJSON: true })
           .then(
-            response => {
+            (response) => {
               console.log(response.body);
               //用户名不存在
               if (response.body.flag == 0) {
@@ -138,7 +139,7 @@ export default {
                 //提示登录成功!,再返回到主页面上
                 this.$message({
                   message: "你好,尊敬的会员",
-                  type: "success"
+                  type: "success",
                 });
                 //向父组件发射方法,改变值,再发送username过去,再把你好xxxx显示出来
                 this.$emit("success", false, token.username, true);
@@ -158,7 +159,7 @@ export default {
                 this.$parent.getCart();
               }
             },
-            response => {
+            (response) => {
               console.log("请求失败");
             }
           );
@@ -170,8 +171,8 @@ export default {
     //忘记密码
     forgetPw() {
       window.location.href = "/#/forgetPw";
-    }
-  }
+    },
+  },
 };
 </script>
 

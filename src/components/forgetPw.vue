@@ -43,7 +43,12 @@
       @keyup.enter.native="reset"
     ></el-input>
 
-    <el-button @click="reset" :class="{gray:bgGray==1}" :disabled="disInfo">{{resetInfo}}</el-button>
+    <el-button
+      @click="reset"
+      :class="{ gray: bgGray == 1 }"
+      :disabled="disInfo"
+      >{{ resetInfo }}</el-button
+    >
   </div>
 </template>
 <script>
@@ -78,7 +83,7 @@ export default {
       //控制注册后设置的按钮信息
       resetInfo: "重置密码",
       bgGray: 0,
-      disInfo: false
+      disInfo: false,
     };
   },
   methods: {
@@ -108,10 +113,10 @@ export default {
       } else if (this.checkName()) {
         //用户名验证唯一性
         var obj = {
-          username: this.userName
+          username: this.userName,
         };
         this.$http.get("http://localhost:4000/checkName", { params: obj }).then(
-          response => {
+          (response) => {
             console.log(response.body);
             if (response.body.flag == 0) {
               this.info1 = "用户名不存在";
@@ -124,7 +129,7 @@ export default {
               this.fontRedN = 0;
             }
           },
-          response => {
+          (response) => {
             console.log("请求失败");
           }
         );
@@ -228,22 +233,22 @@ export default {
         var obj = {
           username: this.userName,
           oldPassword: this.userPassword,
-          newPassword: this.userNewPassword
+          newPassword: this.userNewPassword,
         };
 
         //再发送AJax
         this.$http
           .post("http://localhost:4000/resetPassword", obj, {
-            emulateJSON: true
+            emulateJSON: true,
           })
           .then(
-            response => {
+            (response) => {
               //0 旧密码错误 1,修改成功 2,修改失败
               console.log(response.body);
               if (response.body.flag == 1) {
                 this.$message({
                   message: "恭喜你，修改成功,请登录",
-                  type: "success"
+                  type: "success",
                 });
                 window.location.href = "/#/login";
                 console.log("测试location后的代码还会执行");
@@ -267,17 +272,17 @@ export default {
                 this.$notify({
                   title: "警告",
                   message: "修改失败,请联系系统开发者",
-                  type: "warning"
+                  type: "warning",
                 });
               }
             },
-            response => {
+            (response) => {
               console.log("请求失败");
             }
           );
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -319,4 +324,3 @@ p {
   color: white;
 }
 </style>
-
