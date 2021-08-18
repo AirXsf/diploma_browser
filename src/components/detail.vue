@@ -63,7 +63,7 @@
             <el-image fit="fill" :src="detail.img" />
           </el-col>
           <el-col :span="9">
-            <el-col>{{detail.description}}</el-col>
+            <el-col>{{ detail.description }}</el-col>
             <el-col :span="24">
               <el-divider></el-divider>
             </el-col>
@@ -71,14 +71,14 @@
             <el-col>
               <el-col :span="7">商品名:</el-col>
               <el-col :span="17">
-                <span>{{detail.name}}</span>
+                <span>{{ detail.name }}</span>
               </el-col>
             </el-col>
 
             <el-col>
               <el-col :span="7">价格:</el-col>
               <el-col :span="17">
-                <span>{{detail.price}}</span>
+                <span>{{ detail.price }}</span>
               </el-col>
             </el-col>
 
@@ -115,7 +115,7 @@
             <el-col v-show="flag1">
               <el-col :span="7">尺码:</el-col>
               <el-col :span="17">
-                <span>{{size}}</span>
+                <span>{{ size }}</span>
               </el-col>
             </el-col>
 
@@ -137,14 +137,14 @@
             <el-col v-show="flag2">
               <el-col :span="7">作者:</el-col>
               <el-col :span="17">
-                <span>{{author}}</span>
+                <span>{{ author }}</span>
               </el-col>
             </el-col>
 
             <el-col v-show="flag2">
               <el-col :span="7">类别:</el-col>
               <el-col :span="17">
-                <span>{{category}}</span>
+                <span>{{ category }}</span>
               </el-col>
             </el-col>
 
@@ -181,7 +181,13 @@
               <el-col :span="7">数量:</el-col>
               <el-col :span="17">
                 <span>
-                  <el-input-number size="small" v-model="num" :min="1" :max="1" label="描述文字"></el-input-number>
+                  <el-input-number
+                    size="small"
+                    v-model="num"
+                    :min="1"
+                    :max="1"
+                    label="描述文字"
+                  ></el-input-number>
                 </span>
               </el-col>
             </el-col>
@@ -192,12 +198,20 @@
 
             <el-col>
               <el-col :span="7">
-                <el-button type="danger" plain @click="purchase">立即购买</el-button>
+                <el-button type="danger" plain @click="purchase"
+                  >立即购买</el-button
+                >
               </el-col>
               <el-col :span="8">
                 <span>
                   <el-tooltip :content="ifCart" placement="top">
-                    <el-button type="danger" plain @click="joinCart" :class="{bgc:flag11==1}">加入购物车</el-button>
+                    <el-button
+                      type="danger"
+                      plain
+                      @click="joinCart"
+                      :class="{ bgc: flag11 == 1 }"
+                      >加入购物车</el-button
+                    >
                   </el-tooltip>
                 </span>
               </el-col>
@@ -205,7 +219,7 @@
                 <el-tooltip :content="ifCollect" placement="top">
                   <el-button
                     type="danger"
-                    :class="{bgc:flag10==1}"
+                    :class="{ bgc: flag10 == 1 }"
                     plain
                     icon="el-icon-star-off"
                     @click="preserve"
@@ -232,13 +246,20 @@
         <!--评论容器-->
         <el-row class="comment">
           <el-col :span="6" :offset="1">
-            <el-input type="textarea" :rows="3" placeholder="请输入商品评价" v-model="textarea"></el-input>
+            <el-input
+              type="textarea"
+              :rows="3"
+              placeholder="请输入商品评价"
+              v-model="textarea"
+            ></el-input>
           </el-col>
           <el-col :span="3" :offset="1">
             <el-rate v-model="rateValue" show-text></el-rate>
           </el-col>
           <el-col :span="2">
-            <el-button type="primary" plain @click="insertComment">发表</el-button>
+            <el-button type="primary" plain @click="insertComment"
+              >发表</el-button
+            >
           </el-col>
         </el-row>
 
@@ -250,11 +271,23 @@
 
         <!--评论区得内容 -->
         <el-table :data="commentData" border style="width: 100%">
-          <el-table-column prop="date" label="时间" width="150"></el-table-column>
-          <el-table-column prop="username" label="会员名" width="150"></el-table-column>
+          <el-table-column
+            prop="date"
+            label="时间"
+            width="150"
+          ></el-table-column>
+          <el-table-column
+            prop="username"
+            label="会员名"
+            width="150"
+          ></el-table-column>
           <el-table-column prop="level" label="星级" width="180">
             <template slot-scope="scope">
-              <el-rate v-model="scope.row.level" disabled="true" show-text></el-rate>
+              <el-rate
+                v-model="scope.row.level"
+                disabled="true"
+                show-text
+              ></el-rate>
             </template>
           </el-table-column>
           <el-table-column prop="content" label="评论内容"></el-table-column>
@@ -281,7 +314,11 @@
         </p>
         <el-form :model="form">
           <el-form-item label="会员名" :label-width="formLabelWidth">
-            <el-input placeholder="请输入会员名" v-model="form.member" autocomplete="off"></el-input>
+            <el-input
+              placeholder="请输入会员名"
+              v-model="form.member"
+              autocomplete="off"
+            ></el-input>
           </el-form-item>
 
           <el-form-item label="性别" :label-width="formLabelWidth">
@@ -292,7 +329,11 @@
           </el-form-item>
 
           <el-form-item label="年龄" :label-width="formLabelWidth">
-            <el-input placeholder="年龄" v-model="form.age" autocomplete="off"></el-input>
+            <el-input
+              placeholder="年龄"
+              v-model="form.age"
+              autocomplete="off"
+            ></el-input>
           </el-form-item>
 
           <el-form-item label="毕业院校" :label-width="formLabelWidth">
@@ -313,7 +354,8 @@
               type="primary"
               @click="$refs.drawer.closeDrawer()"
               :loading="loading"
-            >{{ loading ? '提交中 ...' : '提交' }}</el-button>
+              >{{ loading ? "提交中 ..." : "提交" }}</el-button
+            >
           </el-col>
         </div>
         <p>
@@ -339,15 +381,27 @@
             </p>
             <el-form :model="form">
               <el-form-item label="姓名" :label-width="formLabelWidth">
-                <el-input v-model="form.name" placeholder="请输入姓名" autocomplete="off"></el-input>
+                <el-input
+                  v-model="form.name"
+                  placeholder="请输入姓名"
+                  autocomplete="off"
+                ></el-input>
               </el-form-item>
 
               <el-form-item label="电话" :label-width="formLabelWidth">
-                <el-input v-model="form.number" placeholder="请输入11位电话号码" autocomplete="off"></el-input>
+                <el-input
+                  v-model="form.number"
+                  placeholder="请输入11位电话号码"
+                  autocomplete="off"
+                ></el-input>
               </el-form-item>
 
               <el-form-item label="邮政编码" :label-width="formLabelWidth">
-                <el-input v-model="form.postCode" placeholder="请输入所在6位地区邮政编码" autocomplete="off"></el-input>
+                <el-input
+                  v-model="form.postCode"
+                  placeholder="请输入所在6位地区邮政编码"
+                  autocomplete="off"
+                ></el-input>
               </el-form-item>
 
               <el-form-item label="地址" :label-width="formLabelWidth">
@@ -371,7 +425,8 @@
                   type="primary"
                   @click="handleClose2"
                   :loading="loading"
-                >{{ loading ? '提交中 ...' : '提交' }}</el-button>
+                  >{{ loading ? "提交中 ..." : "提交" }}</el-button
+                >
               </el-col>
             </div>
           </el-drawer>
@@ -394,18 +449,36 @@
           <span>收藏夹</span>
         </el-col>
         <el-col :span="1" :offset="9">
-          <button type="button" @click="closeCollect" class="el-drawer__close-btn">
+          <button
+            type="button"
+            @click="closeCollect"
+            class="el-drawer__close-btn"
+          >
             <i class="el-dialog__close el-icon el-icon-close"></i>
           </button>
         </el-col>
       </div>
 
       <el-table
-        :data="tableData.filter(data => !search1 || data.name.toLowerCase().includes(search1.toLowerCase()))"
+        :data="
+          tableData.filter(
+            (data) =>
+              !search1 ||
+              data.name.toLowerCase().includes(search1.toLowerCase())
+          )
+        "
         style="width: 100%"
       >
-        <el-table-column prop="name" label="商品名" width="120"></el-table-column>
-        <el-table-column prop="price" label="价格" width="120"></el-table-column>
+        <el-table-column
+          prop="name"
+          label="商品名"
+          width="120"
+        ></el-table-column>
+        <el-table-column
+          prop="price"
+          label="价格"
+          width="120"
+        ></el-table-column>
 
         <el-table-column prop="img" width="120" label="图片">
           <!--插入图片链接的代码-->
@@ -415,12 +488,18 @@
         </el-table-column>
 
         <el-table-column width="137">
-          <template slot="header" slot-scope="scope">
-            <el-input v-model="search1" size="mini" placeholder="输入商品名搜索" />
+          <template slot="header">
+            <el-input
+              v-model="search1"
+              size="mini"
+              placeholder="输入商品名搜索"
+            />
           </template>
 
           <template slot-scope="scope">
-            <el-link type="danger" @click="removeCollect(scope.row.name)">移去</el-link>
+            <el-link type="danger" @click="removeCollect(scope.row.name)"
+              >移去</el-link
+            >
           </template>
         </el-table-column>
       </el-table>
@@ -472,7 +551,12 @@
     </el-drawer>
 
     <!--购物车模块-->
-    <el-dialog title="提示" :visible.sync="dialogTableVisible" style="height:500px;" @close="close">
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogTableVisible"
+      style="height:500px;"
+      @close="close"
+    >
       <!--这里的slot插槽可以替换title的值,所以加html样式和图标-->
       <div slot="title" style="font-size:23px;">
         <i class="el-icon-shopping-cart-full"></i>
@@ -480,8 +564,16 @@
       </div>
 
       <el-table :data="gridData" @selection-change="handleSelectionChange">
-        <el-table-column prop="name" label="商品名" width="145"></el-table-column>
-        <el-table-column prop="price" label="价格" width="145"></el-table-column>
+        <el-table-column
+          prop="name"
+          label="商品名"
+          width="145"
+        ></el-table-column>
+        <el-table-column
+          prop="price"
+          label="价格"
+          width="145"
+        ></el-table-column>
 
         <el-table-column prop="img" width="145" label="图片">
           <!--插入图片链接的代码-->
@@ -490,10 +582,16 @@
           </template>
         </el-table-column>
 
-        <el-table-column type="selection" width="55" align="center"></el-table-column>
+        <el-table-column
+          type="selection"
+          width="55"
+          align="center"
+        ></el-table-column>
         <el-table-column label="操作" align="center" width="180">
           <template slot-scope="scope">
-            <el-link type="danger" @click="removeCart(scope.row.name)">移去</el-link>
+            <el-link type="danger" @click="removeCart(scope.row.name)"
+              >移去</el-link
+            >
           </template>
         </el-table-column>
       </el-table>
@@ -501,10 +599,12 @@
       <div slot="footer" class="dialog-footer">
         <el-col :span="24">
           <el-col :span="4" :offset="16">
-            <span>金额:{{total_price}}</span>
+            <span>金额:{{ total_price }}</span>
           </el-col>
           <el-col :span="2" :offset="1">
-            <el-button type="danger" size="small" plain @click="cartPurchase">立即购买</el-button>
+            <el-button type="danger" size="small" plain @click="cartPurchase"
+              >立即购买</el-button
+            >
           </el-col>
         </el-col>
       </div>
@@ -574,7 +674,7 @@ export default {
         delivery: false,
         type: [],
         resource: "",
-        desc: ""
+        desc: "",
       },
       formLabelWidth: "80px",
 
@@ -627,7 +727,7 @@ export default {
 
       textarea: "",
 
-      commentData: []
+      commentData: [],
     };
   },
   created() {
@@ -667,7 +767,7 @@ export default {
       } else {
         this.total_price = "0￥";
       }
-    }
+    },
   },
 
   /*用computed也可计算总价格
@@ -742,12 +842,12 @@ export default {
     getCollect() {
       this.confirm(() => {
         var obj = {
-          username: JSON.parse(localStorage.getItem("token")).username
+          username: JSON.parse(localStorage.getItem("token")).username,
         };
         this.$http
           .get("http://localhost:4000/getCollect", { params: obj })
           .then(
-            response => {
+            (response) => {
               console.log(response.body);
               //如果查不到数据,为空数组;
               if (response.body.length == 0) {
@@ -761,7 +861,7 @@ export default {
                 this.collectNumber = this.tableData.length;
               }
             },
-            reponse => {
+            (reponse) => {
               console.log("响应失败");
             }
           );
@@ -776,11 +876,11 @@ export default {
           .get("http://localhost:4000/getIndexOf", {
             params: {
               name: this.detail.name,
-              username: JSON.parse(localStorage.getItem("token")).username
-            }
+              username: JSON.parse(localStorage.getItem("token")).username,
+            },
           })
           .then(
-            response => {
+            (response) => {
               if (response.body.flag == 1) {
                 this.reCollect = false;
                 this.flag10 = 1;
@@ -792,7 +892,7 @@ export default {
                 console.log("可收藏");
               }
             },
-            reponse => {
+            (reponse) => {
               console.log("请求失败");
             }
           );
@@ -809,10 +909,10 @@ export default {
               username: JSON.parse(localStorage.getItem("token")).username,
               name: this.detail.name,
               price: this.detail.price,
-              img: this.detail.img
+              img: this.detail.img,
             })
             .then(
-              response => {
+              (response) => {
                 console.log(response.body);
                 if (response.body.flag == 1) {
                   //更新收藏数量
@@ -826,18 +926,18 @@ export default {
                   this.$notify({
                     title: "成功",
                     message: "收藏成功",
-                    type: "success"
+                    type: "success",
                   });
                 }
               },
-              response => {
+              (response) => {
                 console.log("响应失败");
               }
             );
         } else {
           this.$notify.error({
             title: "错误",
-            message: "已收藏,请不要重复收藏"
+            message: "已收藏,请不要重复收藏",
           });
         }
       });
@@ -849,12 +949,12 @@ export default {
         //组织当前的信息
         var obj = {
           name: name,
-          username: JSON.parse(localStorage.getItem("token")).username
+          username: JSON.parse(localStorage.getItem("token")).username,
         };
         this.$http
           .get("http://localhost:4000/removeCollect", { params: obj })
           .then(
-            response => {
+            (response) => {
               console.log(response.body);
               if (response.body.flag == 1) {
                 //获取最新的个人收藏夹
@@ -867,11 +967,11 @@ export default {
                 this.$notify({
                   title: "成功",
                   message: "移出成功",
-                  type: "success"
+                  type: "success",
                 });
               }
             },
-            response => {
+            (response) => {
               console.log("响应失败");
             }
           );
@@ -883,7 +983,7 @@ export default {
       this.confirm(() => {
         this.$message({
           message: "恭喜你，购买成功",
-          type: "success"
+          type: "success",
         });
       });
     },
@@ -953,10 +1053,10 @@ export default {
           sex: this.form.sex,
           age: this.form.age,
           college: this.form.college,
-          token: token
+          token: token,
         };
         this.$http.post("http://localhost:4000/alterInfo", obj).then(
-          response => {
+          (response) => {
             console.log(response.body);
             if (response.body.flag == 1) {
               //关闭抽屉,显示更新成功
@@ -969,7 +1069,7 @@ export default {
                   this.$notify({
                     title: "成功",
                     message: "更新成功",
-                    type: "success"
+                    type: "success",
                   });
                   //去掉提示
                   this.flag3 = false;
@@ -977,7 +1077,7 @@ export default {
               }, 1500);
             }
           },
-          response => {
+          (response) => {
             console.log("请求失败");
           }
         );
@@ -1019,10 +1119,10 @@ export default {
           number: this.form.number,
           postCode: this.form.postCode,
           address: this.form.address,
-          token: token
+          token: token,
         };
         this.$http.post("http://localhost:4000/alterInnerInfo", obj).then(
-          response => {
+          (response) => {
             console.log(response.body);
             if (response.body.flag == 1) {
               //关闭抽屉,显示更新成功
@@ -1035,7 +1135,7 @@ export default {
                     title: "成功",
                     message: "更新成功",
                     type: "success",
-                    position: "bottom-right"
+                    position: "bottom-right",
                   });
                   //去掉提示
                   this.flag4 = false;
@@ -1043,7 +1143,7 @@ export default {
               }, 1500);
             }
           },
-          response => {
+          (response) => {
             console.log("请求失败");
           }
         );
@@ -1065,11 +1165,11 @@ export default {
         console.log(username);
         var obj = {
           //这里没有主页面上的username属性,所以不能用this.username;
-          username: username
+          username: username,
         };
         console.log(obj);
         this.$http.get("http://localhost:4000/getInfo", { params: obj }).then(
-          response => {
+          (response) => {
             var info = response.body;
             console.log(info);
             if (info.flag == 0) {
@@ -1086,7 +1186,7 @@ export default {
               this.form.college = info.college;
             }
           },
-          response => {
+          (response) => {
             console.log("获取失败");
           }
         );
@@ -1100,13 +1200,13 @@ export default {
         console.log(username);
         var obj = {
           //这里没有主页面上的username属性,所以不能用this.username;
-          username: username
+          username: username,
         };
         console.log(obj);
         this.$http
           .get("http://localhost:4000/getInnerInfo", { params: obj })
           .then(
-            response => {
+            (response) => {
               var info = response.body;
               console.log(info);
               if (info.flag == 0) {
@@ -1123,7 +1223,7 @@ export default {
                 this.form.address = info.address;
               }
             },
-            response => {
+            (response) => {
               console.log("获取失败");
             }
           );
@@ -1147,10 +1247,10 @@ export default {
     getCart() {
       if (localStorage.getItem("token")) {
         var obj = {
-          username: JSON.parse(localStorage.getItem("token")).username
+          username: JSON.parse(localStorage.getItem("token")).username,
         };
         this.$http.get("http://localhost:4000/getCart", { params: obj }).then(
-          response => {
+          (response) => {
             console.log(response.body);
             //如果查不到数据,为空数组;
             if (response.body.length == 0) {
@@ -1164,7 +1264,7 @@ export default {
               this.cartNumber = this.gridData.length;
             }
           },
-          reponse => {
+          (reponse) => {
             console.log("响应失败");
           }
         );
@@ -1178,11 +1278,11 @@ export default {
           .get("http://localhost:4000/getJoinCart", {
             params: {
               name: this.detail.name,
-              username: JSON.parse(localStorage.getItem("token")).username
-            }
+              username: JSON.parse(localStorage.getItem("token")).username,
+            },
           })
           .then(
-            response => {
+            (response) => {
               if (response.body.flag == 1) {
                 this.reJoin = false;
                 this.flag11 = 1;
@@ -1193,7 +1293,7 @@ export default {
                 this.ifCart = "未加入购物车";
               }
             },
-            reponse => {
+            (reponse) => {
               console.log("请求失败");
             }
           );
@@ -1210,10 +1310,10 @@ export default {
               username: JSON.parse(localStorage.getItem("token")).username,
               name: this.detail.name,
               price: this.detail.price,
-              img: this.detail.img
+              img: this.detail.img,
             })
             .then(
-              response => {
+              (response) => {
                 console.log(response.body);
                 if (response.body.flag == 1) {
                   //更新收藏数量
@@ -1228,18 +1328,18 @@ export default {
                   this.$notify({
                     title: "成功",
                     message: "加入购物车成功",
-                    type: "success"
+                    type: "success",
                   });
                 }
               },
-              response => {
+              (response) => {
                 console.log("响应失败");
               }
             );
         } else {
           this.$notify.error({
             title: "错误",
-            message: "已加入,请不要重复加入"
+            message: "已加入,请不要重复加入",
           });
         }
       });
@@ -1251,12 +1351,12 @@ export default {
         //组织当前的信息
         var obj = {
           name: name,
-          username: JSON.parse(localStorage.getItem("token")).username
+          username: JSON.parse(localStorage.getItem("token")).username,
         };
         this.$http
           .get("http://localhost:4000/removeCart", { params: obj })
           .then(
-            response => {
+            (response) => {
               console.log(response.body);
               if (response.body.flag == 1) {
                 //获取最新的个人购物车
@@ -1269,11 +1369,11 @@ export default {
                 this.$notify({
                   title: "成功",
                   message: "移出成功",
-                  type: "success"
+                  type: "success",
                 });
               }
             },
-            response => {
+            (response) => {
               console.log("响应失败");
             }
           );
@@ -1308,13 +1408,13 @@ export default {
         if (this.gridData.length == 0) {
           this.$notify.error({
             title: "错误",
-            message: "购物车无商品"
+            message: "购物车无商品",
           });
           return;
         } else if (this.multipleSelection.length == 0) {
           this.$notify.error({
             title: "错误",
-            message: "请先勾选商品,再购买"
+            message: "请先勾选商品,再购买",
           });
         } else {
           this.$http
@@ -1322,15 +1422,15 @@ export default {
               //选中的数组;
               list: this.multipleSelection,
               //用户名;
-              username: JSON.parse(localStorage.getItem("token")).username
+              username: JSON.parse(localStorage.getItem("token")).username,
             })
             .then(
-              response => {
+              (response) => {
                 console.log(response.body);
                 if (response.body.flag == 1) {
                   this.$message({
                     message: "恭喜你，购买成功",
-                    type: "success"
+                    type: "success",
                   });
                   //刷新购物车,
                   this.getCart();
@@ -1344,7 +1444,7 @@ export default {
                   console.log("删除失败");
                 }
               },
-              repsonse => {
+              (repsonse) => {
                 console.log("响应失败");
               }
             );
@@ -1357,12 +1457,12 @@ export default {
       if (localStorage.getItem("token")) {
         //组织对象
         var obj = {
-          name: JSON.parse(sessionStorage.getItem("detail")).name
+          name: JSON.parse(sessionStorage.getItem("detail")).name,
         };
         this.$http
           .get("http://localhost:4000/getComment", { params: obj })
           .then(
-            response => {
+            (response) => {
               if (response.body.length == 0) {
                 this.commentData = response.body;
               } else {
@@ -1370,7 +1470,7 @@ export default {
                 this.commentData = response.body.reverse();
               }
             },
-            response => {
+            (response) => {
               console.log("响应失败");
             }
           );
@@ -1386,7 +1486,7 @@ export default {
         if ((textarea == "") | (this.rateValue == null)) {
           this.$notify.error({
             title: "错误",
-            message: "评论和星级都不能少哦"
+            message: "评论和星级都不能少哦",
           });
         } else {
           var datetime = new Date();
@@ -1407,17 +1507,17 @@ export default {
             username: JSON.parse(localStorage.getItem("token")).username,
             level: this.rateValue,
             content: this.textarea,
-            name: JSON.parse(sessionStorage.getItem("detail")).name
+            name: JSON.parse(sessionStorage.getItem("detail")).name,
           };
           console.log(obj);
           this.$http.post("http://localhost:4000/insertComment", obj).then(
-            response => {
+            (response) => {
               console.log(response.body);
               if (response.body.flag == 1) {
                 this.$notify({
                   title: "成功",
                   message: "评论成功",
-                  type: "success"
+                  type: "success",
                 });
                 //清空数据
                 this.textarea = "";
@@ -1427,22 +1527,22 @@ export default {
               } else {
                 this.$notify.info({
                   title: "消息",
-                  message: "评论失败,请联系管理员"
+                  message: "评论失败,请联系管理员",
                 });
               }
             },
-            response => {
+            (response) => {
               console.log("响应失败");
             }
           );
         }
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
-<style  lang="scss">
+<style lang="scss">
 .demo-drawer__footer .el-button {
   width: 100%;
   height: 100%;

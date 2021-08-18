@@ -53,11 +53,21 @@
     </el-menu>
 
     <!--卡片-->
-    <el-col :span="7" :offset="1" v-for="(item,index) in newList" :key="item.id">
+    <el-col
+      :span="7"
+      :offset="1"
+      v-for="(item, index) in newList"
+      :key="item.id"
+    >
       <el-card class="box-card" shadow="always">
         <div slot="header" class="clearfix">
-          <span>{{item.category}}</span>
-          <el-button style="float: right; padding: 3px 0" type="text" @click="detail(index)">宝贝详情</el-button>
+          <span>{{ item.category }}</span>
+          <el-button
+            style="float: right; padding: 3px 0"
+            type="text"
+            @click="detail(index)"
+            >宝贝详情</el-button
+          >
         </div>
         <el-image fit="fill" :src="item.img" />
         <div class="information">
@@ -100,7 +110,11 @@
         </p>
         <el-form :model="form">
           <el-form-item label="会员名" :label-width="formLabelWidth">
-            <el-input placeholder="请输入会员名" v-model="form.member" autocomplete="off"></el-input>
+            <el-input
+              placeholder="请输入会员名"
+              v-model="form.member"
+              autocomplete="off"
+            ></el-input>
           </el-form-item>
 
           <el-form-item label="性别" :label-width="formLabelWidth">
@@ -111,7 +125,11 @@
           </el-form-item>
 
           <el-form-item label="年龄" :label-width="formLabelWidth">
-            <el-input placeholder="年龄" v-model="form.age" autocomplete="off"></el-input>
+            <el-input
+              placeholder="年龄"
+              v-model="form.age"
+              autocomplete="off"
+            ></el-input>
           </el-form-item>
 
           <el-form-item label="毕业院校" :label-width="formLabelWidth">
@@ -132,7 +150,8 @@
               type="primary"
               @click="$refs.drawer.closeDrawer()"
               :loading="loading"
-            >{{ loading ? '提交中 ...' : '提交' }}</el-button>
+              >{{ loading ? "提交中 ..." : "提交" }}</el-button
+            >
           </el-col>
         </div>
         <p>
@@ -158,15 +177,27 @@
             </p>
             <el-form :model="form">
               <el-form-item label="姓名" :label-width="formLabelWidth">
-                <el-input v-model="form.name" placeholder="请输入姓名" autocomplete="off"></el-input>
+                <el-input
+                  v-model="form.name"
+                  placeholder="请输入姓名"
+                  autocomplete="off"
+                ></el-input>
               </el-form-item>
 
               <el-form-item label="电话" :label-width="formLabelWidth">
-                <el-input v-model="form.number" placeholder="请输入11位电话号码" autocomplete="off"></el-input>
+                <el-input
+                  v-model="form.number"
+                  placeholder="请输入11位电话号码"
+                  autocomplete="off"
+                ></el-input>
               </el-form-item>
 
               <el-form-item label="邮政编码" :label-width="formLabelWidth">
-                <el-input v-model="form.postCode" placeholder="请输入所在6位地区邮政编码" autocomplete="off"></el-input>
+                <el-input
+                  v-model="form.postCode"
+                  placeholder="请输入所在6位地区邮政编码"
+                  autocomplete="off"
+                ></el-input>
               </el-form-item>
 
               <el-form-item label="地址" :label-width="formLabelWidth">
@@ -190,7 +221,8 @@
                   type="primary"
                   @click="handleClose2"
                   :loading="loading"
-                >{{ loading ? '提交中 ...' : '提交' }}</el-button>
+                  >{{ loading ? "提交中 ..." : "提交" }}</el-button
+                >
               </el-col>
             </div>
           </el-drawer>
@@ -213,18 +245,36 @@
           <span>收藏夹</span>
         </el-col>
         <el-col :span="1" :offset="9">
-          <button type="button" @click="closeCollect" class="el-drawer__close-btn">
+          <button
+            type="button"
+            @click="closeCollect"
+            class="el-drawer__close-btn"
+          >
             <i class="el-dialog__close el-icon el-icon-close"></i>
           </button>
         </el-col>
       </div>
 
       <el-table
-        :data="tableData.filter(data => !search1 || data.name.toLowerCase().includes(search1.toLowerCase()))"
+        :data="
+          tableData.filter(
+            (data) =>
+              !search1 ||
+              data.name.toLowerCase().includes(search1.toLowerCase())
+          )
+        "
         style="width: 100%"
       >
-        <el-table-column prop="name" label="商品名" width="120"></el-table-column>
-        <el-table-column prop="price" label="价格" width="120"></el-table-column>
+        <el-table-column
+          prop="name"
+          label="商品名"
+          width="120"
+        ></el-table-column>
+        <el-table-column
+          prop="price"
+          label="价格"
+          width="120"
+        ></el-table-column>
 
         <el-table-column prop="img" width="120" label="图片">
           <!--插入图片链接的代码-->
@@ -234,19 +284,30 @@
         </el-table-column>
 
         <el-table-column width="137">
-          <template slot="header" slot-scope="scope">
-            <el-input v-model="search1" size="mini" placeholder="输入商品名搜索" />
+          <template slot="header">
+            <el-input
+              v-model="search1"
+              size="mini"
+              placeholder="输入商品名搜索"
+            />
           </template>
 
           <template slot-scope="scope">
-            <el-link type="danger" @click="remove(scope.row.name)">移去</el-link>
+            <el-link type="danger" @click="remove(scope.row.name)"
+              >移去</el-link
+            >
           </template>
         </el-table-column>
       </el-table>
     </el-drawer>
 
     <!--购物车模块-->
-    <el-dialog title="提示" :visible.sync="dialogTableVisible" style="height:500px;" @close="close">
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogTableVisible"
+      style="height:500px;"
+      @close="close"
+    >
       <!--这里的slot插槽可以替换title的值,所以加html样式和图标-->
       <div slot="title" style="font-size:23px;">
         <i class="el-icon-shopping-cart-full"></i>
@@ -254,8 +315,16 @@
       </div>
 
       <el-table :data="gridData" @selection-change="handleSelectionChange">
-        <el-table-column prop="name" label="商品名" width="145"></el-table-column>
-        <el-table-column prop="price" label="价格" width="145"></el-table-column>
+        <el-table-column
+          prop="name"
+          label="商品名"
+          width="145"
+        ></el-table-column>
+        <el-table-column
+          prop="price"
+          label="价格"
+          width="145"
+        ></el-table-column>
 
         <el-table-column prop="img" width="145" label="图片">
           <!--插入图片链接的代码-->
@@ -264,10 +333,16 @@
           </template>
         </el-table-column>
 
-        <el-table-column type="selection" width="55" align="center"></el-table-column>
+        <el-table-column
+          type="selection"
+          width="55"
+          align="center"
+        ></el-table-column>
         <el-table-column label="操作" align="center" width="180">
           <template slot-scope="scope">
-            <el-link type="danger" @click="removeCart(scope.row.name)">移去</el-link>
+            <el-link type="danger" @click="removeCart(scope.row.name)"
+              >移去</el-link
+            >
           </template>
         </el-table-column>
       </el-table>
@@ -275,10 +350,12 @@
       <div slot="footer" class="dialog-footer">
         <el-col :span="24">
           <el-col :span="4" :offset="16">
-            <span>金额:{{total_price}}</span>
+            <span>金额:{{ total_price }}</span>
           </el-col>
           <el-col :span="2" :offset="1">
-            <el-button type="danger" size="small" plain @click="cartPurchase">立即购买</el-button>
+            <el-button type="danger" size="small" plain @click="cartPurchase"
+              >立即购买</el-button
+            >
           </el-col>
         </el-col>
       </div>
@@ -331,7 +408,7 @@ export default {
         delivery: false,
         type: [],
         resource: "",
-        desc: ""
+        desc: "",
       },
       formLabelWidth: "80px",
 
@@ -368,7 +445,7 @@ export default {
       multipleSelection: [],
 
       //watch时用的数据
-      total_price: "0￥"
+      total_price: "0￥",
     };
   },
   created() {
@@ -399,7 +476,7 @@ export default {
       } else {
         this.total_price = "0￥";
       }
-    }
+    },
   },
   methods: {
     //注销后提示回首页登录才能操作
@@ -443,12 +520,12 @@ export default {
         if (this.newList.length == 0) {
           this.$message({
             message: "抱歉，没有找到符合的商品,请重新查询",
-            type: "warning"
+            type: "warning",
           });
         } else {
           this.$message({
             message: "搜索成功,结果如下",
-            type: "success"
+            type: "success",
           });
         }
       });
@@ -507,10 +584,10 @@ export default {
           sex: this.form.sex,
           age: this.form.age,
           college: this.form.college,
-          token: token
+          token: token,
         };
         this.$http.post("http://localhost:4000/alterInfo", obj).then(
-          response => {
+          (response) => {
             console.log(response.body);
             if (response.body.flag == 1) {
               //关闭抽屉,显示更新成功
@@ -523,7 +600,7 @@ export default {
                   this.$notify({
                     title: "成功",
                     message: "更新成功",
-                    type: "success"
+                    type: "success",
                   });
                   //去掉提示
                   this.flag3 = false;
@@ -531,7 +608,7 @@ export default {
               }, 1500);
             }
           },
-          response => {
+          (response) => {
             console.log("请求失败");
           }
         );
@@ -573,10 +650,10 @@ export default {
           number: this.form.number,
           postCode: this.form.postCode,
           address: this.form.address,
-          token: token
+          token: token,
         };
         this.$http.post("http://localhost:4000/alterInnerInfo", obj).then(
-          response => {
+          (response) => {
             console.log(response.body);
             if (response.body.flag == 1) {
               //关闭抽屉,显示更新成功
@@ -589,7 +666,7 @@ export default {
                     title: "成功",
                     message: "更新成功",
                     type: "success",
-                    position: "bottom-right"
+                    position: "bottom-right",
                   });
                   //去掉提示
                   this.flag4 = false;
@@ -597,7 +674,7 @@ export default {
               }, 1500);
             }
           },
-          response => {
+          (response) => {
             console.log("请求失败");
           }
         );
@@ -619,11 +696,11 @@ export default {
         console.log(username);
         var obj = {
           //这里没有主页面上的username属性,所以不能用this.username;
-          username: username
+          username: username,
         };
         console.log(obj);
         this.$http.get("http://localhost:4000/getInfo", { params: obj }).then(
-          response => {
+          (response) => {
             var info = response.body;
             console.log(info);
             if (info.flag == 0) {
@@ -640,7 +717,7 @@ export default {
               this.form.college = info.college;
             }
           },
-          response => {
+          (response) => {
             console.log("获取失败");
           }
         );
@@ -654,13 +731,13 @@ export default {
         console.log(username);
         var obj = {
           //这里没有主页面上的username属性,所以不能用this.username;
-          username: username
+          username: username,
         };
         console.log(obj);
         this.$http
           .get("http://localhost:4000/getInnerInfo", { params: obj })
           .then(
-            response => {
+            (response) => {
               var info = response.body;
               console.log(info);
               if (info.flag == 0) {
@@ -677,7 +754,7 @@ export default {
                 this.form.address = info.address;
               }
             },
-            response => {
+            (response) => {
               console.log("获取失败");
             }
           );
@@ -704,12 +781,12 @@ export default {
     getCollect() {
       if (localStorage.getItem("token")) {
         var obj = {
-          username: JSON.parse(localStorage.getItem("token")).username
+          username: JSON.parse(localStorage.getItem("token")).username,
         };
         this.$http
           .get("http://localhost:4000/getCollect", { params: obj })
           .then(
-            response => {
+            (response) => {
               console.log(response.body);
               //如果查不到数据,为空数组;
               if (response.body.length == 0) {
@@ -723,7 +800,7 @@ export default {
                 this.collectNumber = this.tableData.length;
               }
             },
-            reponse => {
+            (reponse) => {
               console.log("响应失败");
             }
           );
@@ -737,12 +814,12 @@ export default {
         //组织当前的信息
         var obj = {
           name: name,
-          username: JSON.parse(localStorage.getItem("token")).username
+          username: JSON.parse(localStorage.getItem("token")).username,
         };
         this.$http
           .get("http://localhost:4000/removeCollect", { params: obj })
           .then(
-            response => {
+            (response) => {
               console.log(response.body);
               if (response.body.flag == 1) {
                 //获取最新的个人收藏夹
@@ -752,11 +829,11 @@ export default {
                 this.$notify({
                   title: "成功",
                   message: "移出成功",
-                  type: "success"
+                  type: "success",
                 });
               }
             },
-            response => {
+            (response) => {
               console.log("响应失败");
             }
           );
@@ -780,10 +857,10 @@ export default {
     getCart() {
       if (localStorage.getItem("token")) {
         var obj = {
-          username: JSON.parse(localStorage.getItem("token")).username
+          username: JSON.parse(localStorage.getItem("token")).username,
         };
         this.$http.get("http://localhost:4000/getCart", { params: obj }).then(
-          response => {
+          (response) => {
             console.log(response.body);
             //如果查不到数据,为空数组;
             if (response.body.length == 0) {
@@ -797,7 +874,7 @@ export default {
               this.cartNumber = this.gridData.length;
             }
           },
-          reponse => {
+          (reponse) => {
             console.log("响应失败");
           }
         );
@@ -810,12 +887,12 @@ export default {
         //组织当前的信息
         var obj = {
           name: name,
-          username: JSON.parse(localStorage.getItem("token")).username
+          username: JSON.parse(localStorage.getItem("token")).username,
         };
         this.$http
           .get("http://localhost:4000/removeCart", { params: obj })
           .then(
-            response => {
+            (response) => {
               console.log(response.body);
               if (response.body.flag == 1) {
                 //获取最新的个人收藏夹
@@ -825,11 +902,11 @@ export default {
                 this.$notify({
                   title: "成功",
                   message: "移出成功",
-                  type: "success"
+                  type: "success",
                 });
               }
             },
-            response => {
+            (response) => {
               console.log("响应失败");
             }
           );
@@ -864,13 +941,13 @@ export default {
         if (this.gridData.length == 0) {
           this.$notify.error({
             title: "错误",
-            message: "购物车无商品"
+            message: "购物车无商品",
           });
           return;
         } else if (this.multipleSelection.length == 0) {
           this.$notify.error({
             title: "错误",
-            message: "请先勾选商品,再购买"
+            message: "请先勾选商品,再购买",
           });
         } else {
           this.$http
@@ -878,15 +955,15 @@ export default {
               //选中的数组;
               list: this.multipleSelection,
               //用户名;
-              username: JSON.parse(localStorage.getItem("token")).username
+              username: JSON.parse(localStorage.getItem("token")).username,
             })
             .then(
-              response => {
+              (response) => {
                 console.log(response.body);
                 if (response.body.flag == 1) {
                   this.$message({
                     message: "恭喜你，购买成功",
-                    type: "success"
+                    type: "success",
                   });
                   //刷新购物车,
                   this.getCart();
@@ -896,14 +973,14 @@ export default {
                   console.log("删除失败");
                 }
               },
-              repsonse => {
+              (repsonse) => {
                 console.log("响应失败");
               }
             );
         }
       });
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="less">

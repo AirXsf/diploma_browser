@@ -25,7 +25,12 @@
       :class="{ redBorder: redP == 1 }"
       @keyup.enter.native="register"
     ></el-input>
-    <el-button @click="register" :class="{gray:bgGray==1}" :disabled="disInfo">{{registerInfo}}</el-button>
+    <el-button
+      @click="register"
+      :class="{ gray: bgGray == 1 }"
+      :disabled="disInfo"
+      >{{ registerInfo }}</el-button
+    >
   </div>
 </template>
 <script>
@@ -48,7 +53,7 @@ export default {
       //控制注册后设置的按钮信息
       registerInfo: "注册",
       bgGray: 0,
-      disInfo: false
+      disInfo: false,
     };
   },
   methods: {
@@ -77,10 +82,10 @@ export default {
       } else if (this.checkName()) {
         //用户名验证唯一性
         var obj = {
-          username: this.userName
+          username: this.userName,
         };
         this.$http.get("http://localhost:4000/checkName", { params: obj }).then(
-          response => {
+          (response) => {
             console.log(response.body);
             if (response.body.flag == 0) {
               this.flag = true;
@@ -93,7 +98,7 @@ export default {
               this.fontRedN = 1;
             }
           },
-          response => {
+          (response) => {
             console.log("请求失败");
           }
         );
@@ -147,12 +152,12 @@ export default {
         //再发送AJax
         var obj = {
           username: this.userName,
-          password: this.userPassword
+          password: this.userPassword,
         };
         this.$http
           .post("http://localhost:4000/register", obj, { emulateJSON: true })
           .then(
-            response => {
+            (response) => {
               console.log(response.body);
               if (response.body.flag == 1) {
                 /*注册成功写入后(切换路由路由数据会重新刷新会默认值,所以此处不需要设置)
@@ -162,20 +167,20 @@ export default {
                 */
                 this.$message({
                   message: "恭喜你，注册成功,请登录",
-                  type: "success"
+                  type: "success",
                 });
                 window.location.href = "/#/login";
               } else {
                 this.$message.error("注册失败,请联系管理员");
               }
             },
-            response => {
+            (response) => {
               console.log("请求失败");
             }
           );
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
